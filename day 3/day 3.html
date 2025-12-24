@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 3 </title>
+    <link rel="stylesheet" href="day 3.css">
+</head>
+<body>
+
+    <h1>task 1</h1>
+      <div class="box">
+    <h2>Simple Login System</h2>
+    <p>Open the console (F12 → Console) to see the result.</p>
+  </div>
+
+  <script>
+    // Stored credentials
+    const storedUsername = "admin";
+    const storedPassword = "12345";
+
+    // Prompt user for input
+    const username = prompt("Enter your username:");
+    const password = prompt("Enter your password:");
+
+    // Check credentials
+    if (username === storedUsername && password === storedPassword) {
+      console.log("✅ Login successful!");
+    } else {
+      console.log("❌ Invalid credentials!");
+    }
+  </script>
+<hr>
+
+<h1>task 2</h1>
+    
+
+  <main class="card">
+    <h1>Traffic light rule </h1>
+    <div id="output" class="traffic-display">Awaiting input…</div>
+
+    <button class="btn" id="askBtn">
+      🔎 Ask for color
+    </button>
+
+    <div class="lights">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+    </div>
+  </main>
+
+
+  <script>
+
+    const output = document.getElementById('output');
+    const askBtn = document.getElementById('askBtn');
+
+    askBtn.addEventListener('click', () => {
+      // EN: Ask user for a color
+      const raw = prompt('Enter a traffic light color (red, yellow, green):');
+
+      // EN: If user cancels or leaves empty
+      if (raw === null || raw.trim() === '') {
+        output.textContent = 'Invalid color!';
+        output.style.color = '#ef4444'; // red
+        return;
+      }
+
+      // EN: Normalize input: trim and lowercase
+      const color = raw.trim().toLowerCase();
+
+      // EN: Decide rule based on color
+      let message = '';
+      let colorHex = '#e5e7eb'; // default text
+      if (color === 'red') {
+        message = 'Stop!';
+        colorHex = '#ef4444';
+      } else if (color === 'yellow') {
+        message = 'Slow down!';
+        colorHex = '#f59e0b';
+      } else if (color === 'green') {
+        message = 'Go!';
+        colorHex = '#22c55e';
+      } else {
+        message = 'Invalid color!';
+        colorHex = '#ef4444';
+      }
+
+      // EN: Show message
+      output.textContent = message;
+      output.style.color = colorHex;
+    });
+  </script>
+<hr>
+
+<h1>task 3 </h1>
+
+
+  <div class="game">
+    <h1>Number Guessing Game </h1>
+    <p>Guess a number between 1 and 100<br></p>
+    <input type="number" id="guess" />
+    <br>
+    <button onclick="checkGuess()">Submit</button>
+    <div id="message"></div>
+  </div>
+  <script>
+    // EN: Generate random number between 1 and 100
+    const randomNumber = Math.floor(Math.random() * 100) + 1;
+    let attempts = 0;
+
+    function checkGuess() {
+      const userGuess = Number(document.getElementById('guess').value);
+      const message = document.getElementById('message');
+      attempts++;
+
+      if (userGuess === randomNumber) {
+        message.textContent = ` Correct! You guessed in ${attempts} tries. 
+        ✔️ ${attempts} .`;
+        message.style.color = "#22c55e";
+      } else if (userGuess > randomNumber) {
+        message.textContent = "Too high! Try again.";
+        message.style.color = "#f59e0b";
+      } else if (userGuess < randomNumber) {
+        message.textContent = "Too low! Try again. ";
+        message.style.color = "#ef4444";
+      } else {
+        message.textContent = "Invalid input!";
+        message.style.color = "#ef4444";
+      }
+    }
+  </script>
+
+<hr>
+
+<h1>task 4</h1>
+
+  <main class="cardd">
+    <h1>Age Eligibility Checker</h1>
+    <p>Click and enter your age. See results in the Console.</p>
+    <button id="checkBtn" type="button">Check Eligibility</button>
+    <p class="hint">Open DevTools → <span class="mono">Console</span></p>
+  </main>
+
+  <script>
+    // Tamil/English comments for classroom clarity:
+    // Input → Validate → Console message
+
+    const checkBtn = document.getElementById('checkBtn');
+
+    checkBtn.addEventListener('click', () => {
+      const input = prompt('Enter your age:'); 
+      if (input === null) {
+        // User canceled
+        console.log('Action cancelled.');
+        return;
+      }
+
+      const trimmed = input.trim();
+
+      // Validate: must be a non-empty, non-negative number
+      if (trimmed === '') {
+        console.log('Please enter a valid age.');
+        return;
+      }
+      // Allow decimals but use floor for age in years
+      const age = Math.floor(Number(trimmed));
+
+      if (Number.isNaN(age)) {
+        console.log('Please enter a valid numeric age.');
+        return;
+      }
+      if (age < 0) {
+        console.log('Age cannot be negative.');
+        return;
+      }
+
+      // Core logic — print all that apply
+      console.log(`Age entered: ${age}`);
+
+      if (age < 18) {
+        console.log('You are not eligible for these activities.');
+        return;
+      }
+
+      // 18+: Eligible to vote
+      if (age >= 18) {
+        console.log('Eligible to vote.');
+      }
+ // 21+: Can drink alcohol
+      if (age >= 21) {
+        console.log('Can drink alcohol.');
+      }
+      // 25+: Can rent a car
+      if (age >= 25) {
+        console.log('Can rent a car.');
+      }
+    });
+  </script>
+
+<hr>
+
+<h1>task 5</h1>
+
+  <main class="card1">
+    <div class="title">Grading System with Remarks</div>
+    <div class="sub">Enter marks (0–100).</div>
+
+    <div class="row">
+      <input id="marksInput" type="number" min="0" max="100" placeholder="e.g., 87" />
+      <button id="calcBtn">Calculate</button>
+    </div>
+
+    <div id="message" class="msg tn">Notes: Decimals allowed. Example: 89.5 → A (Good).</div>
+
+    <div id="result" class="result" aria-live="polite" hidden>
+      <div><span class="grade" id="gradeText">Grade: —</span></div>
+      <div><span class="remark" id="remarkText">Remark: —</span></div>
+    </div>
+  </main>
+
+    <script>
+    // English + Tamil comments for clarity
+    // Map grades to remarks
+    const remarks = {
+      "A+": "Excellent",    
+      "A":  "Good",       
+      "B":  "Average",      
+      "C":  "Poor",        
+    };
+
+    function getGrade(mark) {
+      // Simple range checks (inclusive)
+      if (mark >= 90 && mark <= 100) return "A+";
+      if (mark >= 80 && mark <= 89.9999) return "A";
+      if (mark >= 70 && mark <= 79.9999) return "B";
+      if (mark >= 60 && mark <= 69.9999) return "C";
+      if (mark < 60 && mark >= 0) return "F";
+      // Out of range
+      return null;
+    }
+    function showMessage(text, isError = false) {
+      const msg = document.getElementById("message");
+      msg.textContent = text;
+      msg.className = "msg" + (isError ? " error" : " tn");
+    }
+
+    function showResult(grade) {
+      const resultBox = document.getElementById("result");
+      const gradeText = document.getElementById("gradeText");
+      const remarkText = document.getElementById("remarkText");
+
+      gradeText.textContent = "Grade: " + grade;
+      remarkText.textContent = "Remark: " + remarks[grade];
+      resultBox.hidden = false;
+    }
+
+    document.getElementById("calcBtn").addEventListener("click", () => {
+      const val = document.getElementById("marksInput").value.trim();
+
+      // Validate input
+      if (val === "") {
+        showMessage("Please enter marks.", true);
+        return;
+      }
+      const mark = Number(val);
+
+      if (Number.isNaN(mark)) {
+        showMessage("Enter a valid number (0–100).", true);
+        return;
+      }
+      if (mark < 0 || mark > 100) {
+        showMessage("Marks must be between 0 and 100.", true);
+        return;
+      }
+
+      const grade = getGrade(mark);
+      if (!grade) {
+        showMessage("Invalid range.", true);
+        return;
+      }
+
+      showMessage("Result ready. ");
+      showResult(grade);
+    });
+
+    // Enter key support for accessibility
+    document.getElementById("marksInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") document.getElementById("calcBtn").click();
+    });
+  </script>
+
+<hr>
+
+<h1>task 6 </h1>
+
+  <main class="game" aria-labelledby="title">
+    <h1 id="title" class="title">Rock–Paper–Scissors</h1>
+    <p class="desc">Choose one and see if you beat the computer.
+    </p>
+
+    <div class="buttons" role="group" aria-label="Choices">
+      <button class="choice" data-choice="rock"> Rock</button>
+      <button class="choice" data-choice="paper"> Paper</button>
+      <button class="choice" data-choice="scissors"> Scissors</button>
+    </div>
+
+    <section class="status" aria-live="polite">
+      <div class="row"><span class="label">Your choice:</span><span id="player" class="value">—</span></div>
+      <div class="row"><span class="label">Computer:</span><span id="computer" class="value">—</span></div>
+      <div class="row"><span class="label">Score (You–CPU):</span><span id="score" class="value">0–0</span></div>
+    </section>
+   <div id="result" class="result">Make a move!</div>
+
+    <div class="footer">
+      <button class="prompt" id="askPrompt">Type choice</button>
+      <button class="reset" id="resetBtn">Reset</button>
+    </div>
+  </main>
+
+ <script>
+
+    // Choices list 
+    const CHOICES = ["rock", "paper", "scissors"];
+
+    // UI refs — HTML elements
+    const els = {
+      player:   document.getElementById("player"),
+      computer: document.getElementById("computer"),
+      score:    document.getElementById("score"),
+      result:   document.getElementById("result"),
+      buttons:  document.querySelectorAll("button.choice"),
+      reset:    document.getElementById("resetBtn"),
+      prompt:   document.getElementById("askPrompt"),
+    };
+
+    // Keep score 
+    let you = 0, cpu = 0;
+    // Random computer choice 
+    function randomChoice() {
+      const i = Math.floor(Math.random() * CHOICES.length);
+      return CHOICES[i];
+    }
+
+    // Decide winner — 
+    // Returns: "win" | "lose" | "tie"
+    function judge(player, computer) {
+      if (player === computer) return "tie";
+      const winPairs = {
+        rock: "scissors",
+        paper: "rock",
+        scissors: "paper",
+      };
+      // Player wins if computer’s choice equals the one player’s choice beats
+      return winPairs[player] === computer ? "win" : "lose";
+    }
+
+    
+
+    // Play one round 
+    function play(playerChoice) {
+      const p = normalize(playerChoice);
+      if (!CHOICES.includes(p)) {
+        showMessage("Please choose rock, paper, or scissors.", "tie");
+        return;
+      }
+      const c = randomChoice();
+      const result = judge(p, c);
+
+      // Update score
+      if (result === "win") you++;
+      else if (result === "lose") cpu++;
+
+      // Update UI 
+      els.player.textContent   = label(p);
+      els.computer.textContent = label(c);
+      els.score.textContent    = `${you}–${cpu}`;
+      showMessage(
+        result === "win"  ? "You win!" :
+        result === "lose" ? "You lose." :
+                            "It's a tie.",
+        result
+      );
+    }
+
+
+    // Normalize user input
+    function normalize(x) {
+      return String(x || "").trim().toLowerCase();
+    }
+
+    // Pretty label with emoji —
+    function label(choice) {
+      switch (choice) {
+        case "rock":     return " Rock";
+        case "paper":    return " Paper";
+        case "scissors": return " Scissors";
+        default:         return "—";
+      }
+    }
+
+    // Show result line with color 
+    function showMessage(text, kind = "tie") {
+      els.result.className = `result ${kind}`;
+      els.result.textContent = text;
+    }
+
+    // Button clicks 
+    els.buttons.forEach(btn => {
+      btn.addEventListener("click", () => play(btn.dataset.choice));
+    });
+
+    // Prompt input path 
+    els.prompt.addEventListener("click", () => {
+      const answer = prompt("Type your choice: rock, paper, or scissors");
+      if (answer !== null) play(answer);
+    });
+
+    // Reset game 
+    els.reset.addEventListener("click", () => {
+      you = 0; cpu = 0;
+      els.player.textContent = "—";
+      els.computer.textContent = "—";
+      els.score.textContent = "0–0";
+      showMessage("Make a move!", "tie");
+    });
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

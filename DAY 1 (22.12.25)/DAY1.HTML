@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAY 1 </title>
+    <link rel="stylesheet" href="DAY1.CSS">
+</head>
+<body>
+<h1>task 1 </h1>
+
+    
+  <div class="order-box">
+    <h2> Food Order Summary</h2>
+    <p><strong>Restaurant:</strong> <span id="restaurant"></span></p>
+    <p><strong>Order #:</strong> <span id="orderNumber"></span></p>
+    <p><strong>Items:</strong></p>
+    <ul id="itemsList"></ul>
+    <p><strong>Total Price:</strong> ₹<span id="totalPrice"></span></p>
+    <p><strong>Delivery Status:</strong> <span id="deliveryStatus"></span></p>
+    
+    <button class="add" onclick="addItem('Pizza', 250)">+ Add Pizza</button>
+    <button class="add" onclick="addItem('Burger', 150)">+ Add Burger</button>
+    <button class="remove" onclick="removeItem()">- Remove Last Item</button>
+    <button class="delivered" onclick="markDelivered()">✔ Mark Delivered</button>
+  </div>
+
+
+  <script>
+    // 📝 Order Object 
+    let order = {
+      restaurant: "Kovilpatti Tasty Foods", // String
+      orderNumber: 101,                     // Number
+      items: ["Idli", "Dosa"],              // Array
+      totalPrice: 120,                      // Number
+      isDelivered: false                    // Boolean
+    };
+
+    // 🔄 Display Order Summary
+    function displayOrder() {
+      document.getElementById("restaurant").textContent = order.restaurant;
+      document.getElementById("orderNumber").textContent = order.orderNumber;
+      document.getElementById("itemsList").innerHTML = order.items.map(item => `<li>${item}</li>`).join("");
+      document.getElementById("totalPrice").textContent = order.totalPrice;
+      document.getElementById("deliveryStatus").textContent = order.isDelivered ? "✅ Delivered" : "⏳ Pending";
+    }
+    // ➕ Add Item
+    function addItem(itemName, price) {
+      order.items.push(itemName);
+      order.totalPrice += price;
+      displayOrder();
+    }
+
+    // ➖ Remove Last Item 
+    function removeItem() {
+      if(order.items.length > 0) {
+        order.items.pop();
+        order.totalPrice -= 50; // demo: assume avg ₹50 reduction
+        displayOrder();
+      }
+    }
+
+    // ✔ Mark Delivered 
+    function markDelivered() {
+      order.isDelivered = true;
+      displayOrder();
+    }
+
+    // Initial Display
+    displayOrder();
+  </script>
+
+<hr>
+
+<h1>task 2 </h1>
+
+  <div class="quiz-container">
+    <h2 id="question">Question text</h2>
+    <ul class="options" id="options"></ul>
+    <button onclick="nextQuestion()">Submit Answer</button>
+    <div class="result" id="result"></div>
+  </div>
+
+
+  <script>
+    // 1. Store Quiz Details
+    const quiz = [
+      {
+        question: "What is the capital of India?",
+        options: ["Mumbai", "Delhi", "Chennai", "Kolkata"],
+        correctAnswer: "Delhi"
+      },
+      {
+        question: "Which language runs in a web browser?",
+        options: ["Python", "Java", "C++", "JavaScript"],
+        correctAnswer: "JavaScript"
+      },
+      {
+        question: "Who is known as the Father of Computers?",
+        options: ["Charles Babbage", "Alan Turing", "Bill Gates", "Steve Jobs"],
+        correctAnswer: "Charles Babbage"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let userAnswer = "";
+
+        // Load question dynamically
+    function loadQuestion() {
+      const q = quiz[currentQuestion];
+      document.getElementById("question").innerText = q.question;
+      const optionsList = document.getElementById("options");
+      optionsList.innerHTML = "";
+      q.options.forEach(option => {
+        const li = document.createElement("li");
+        li.innerHTML = `<label>
+          <input type="radio" name="option" value="${option}"> ${option}
+        </label>`;
+        optionsList.appendChild(li);
+      });
+      document.getElementById("result").innerText = "";
+    }
+
+    // 2. Validate User Answer
+    function nextQuestion() {
+      const selected = document.querySelector('input[name="option"]:checked');
+      if (!selected) {
+        alert("Please select an answer!");
+        return;
+      }
+      userAnswer = selected.value;
+      const correct = quiz[currentQuestion].correctAnswer;
+      const isCorrect = (userAnswer === correct);
+
+            // 3. Display Quiz Results
+      document.getElementById("result").innerText =
+        `Your Answer: ${userAnswer} | Correct: ${isCorrect}`;
+
+      if (isCorrect) score++;
+
+      currentQuestion++;
+      if (currentQuestion < quiz.length) {
+        setTimeout(loadQuestion, 1500); // load next after 1.5s
+      } else {
+        setTimeout(showFinalScore, 1500);
+      }
+    }
+
+    // 4. Extend for Multiple Questions
+    function showFinalScore() {
+      document.querySelector(".quiz-container").innerHTML =
+        `<h2>Quiz Completed!</h2>
+         <p>Your Score: ${score} / ${quiz.length}</p>`;
+    }
+
+    // Initialize quiz
+    loadQuestion();
+  </script>
+
+<hr>
+
+
+<h1>task 3 </h1>
+
+  <header class="header">
+    <h1 class="brand">Minimal Store</h1>
+    <div class="cart-badge" id="cartBadge">
+      Cart: <span id="cartCount">0</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2 class="section-title">Products</h2>
+    <div class="products" id="products"></div>
+  </main>
+  <aside class="cart">
+    <h2>Your Cart</h2>
+
+    <div id="cartItems" class="cart-items"></div>
+
+    <div class="cart-totals">
+      <div class="row">
+        <span>Subtotal</span>
+        <strong id="cartSubtotal">₹0</strong>
+      </div>
+      <div class="row">
+        <span>Tax (10%)</span>
+        <strong id="cartTax">₹0</strong>
+      </div>
+      <div class="row grand">
+        <span>Total</span>
+        <strong id="cartTotal">₹0</strong>
+      </div>
+      <button id="checkoutBtn" class="btn-primary">Checkout</button>
+      <button id="clearBtn" class="btn-light">Clear Cart</button>
+    </div>
+  </aside>
+
+  <script>
+    // EN: Minimal product dataset
+const PRODUCTS = [
+  { id: 1, title: "Classic T-Shirt", price: 399, img: "tshirt.webp" },
+  { id: 2, title: "Denim Jeans",   price: 1199, img: "jeans.webp" },
+  { id: 3, title: "Sneakers",      price: 2199, img: "shoe.webp" },
+  { id: 4, title: "Backpack",      price: 1599, img: "backback.webp" },
+];
+
+// EN: Cart state (persist with localStorage)
+const CART_KEY = "minimal_cart";
+let cart = loadCart();
+
+function loadCart() {
+  try {
+    const raw = localStorage.getItem(CART_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveCart() {
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
+// EN: Render products
+
+function renderProducts() {
+  const wrap = document.getElementById("products");
+  wrap.innerHTML = "";
+  PRODUCTS.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <img src="${p.img}" alt="${p.title}">
+      <div class="card-body">
+        <div class="title">${p.title}</div>
+        <div class="price">₹${p.price}</div>
+        <button class="btn" data-id="${p.id}">Add to Cart</button>
+      </div>
+    `;
+    wrap.appendChild(card);
+  });
+
+  // EN: Add button click listeners
+  wrap.querySelectorAll("button.btn").forEach(btn => {
+    btn.addEventListener("click", () => addToCart(+btn.dataset.id));
+  });
+}
+
+// EN: Add item to cart (increase qty if exists
+
+function addToCart(id) {
+  const product = PRODUCTS.find(p => p.id === id);
+  if (!product) return;
+
+  const existing = cart.find(item => item.id === id);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ id: product.id, title: product.title, price: product.price, img: product.img, qty: 1 });
+  }
+  saveCart();
+  renderCart();
+}
+
+// EN: Update quantity (min 1)
+function updateQty(id, qty) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+  item.qty = Math.max(1, qty);
+  saveCart();
+  renderCart();
+}
+
+// EN: Remove item
+function removeItem(id) {
+  cart = cart.filter(i => i.id !== id);
+  saveCart();
+  renderCart();
+}
+
+// EN: Clear cart
+function clearCart() {
+  cart = [];
+  saveCart();
+  renderCart();
+}
+
+// EN: Calculate totals (10% tax)
+function calcTotals() {
+  const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+  const tax = Math.round(subtotal * 0.10);
+  const total = subtotal + tax;
+  return { subtotal, tax, total };
+}
+
+// EN: Render cart UI
+function renderCart() {
+  const itemsEl = document.getElementById("cartItems");
+  const countEl = document.getElementById("cartCount");
+  const subEl = document.getElementById("cartSubtotal");
+  const taxEl = document.getElementById("cartTax");
+  const totalEl = document.getElementById("cartTotal");
+
+  // Count
+  const count = cart.reduce((n, i) => n + i.qty, 0);
+  countEl.textContent = count;
+
+  // Items
+  itemsEl.innerHTML = "";
+  if (cart.length === 0) {
+    itemsEl.innerHTML = `<p style="color:#475569">Cart is empty. Add items.</p>`;
+  } else {
+    cart.forEach(i => {
+      const row = document.createElement("div");
+      row.className = "cart-item";
+      row.innerHTML = `
+        <img src="${i.img}" alt="${i.title}">
+        <div>
+          <div class="title">${i.title}</div>
+          <div class="meta">₹${i.price} × ${i.qty} = ₹${i.price * i.qty}</div>
+          <div class="qty">
+            <button aria-label="decrease" data-id="${i.id}" data-action="dec">-</button>
+            <input type="number" min="1" value="${i.qty}" data-id="${i.id}">
+            <button aria-label="increase" data-id="${i.id}" data-action="inc">+</button>
+          </div>
+        </div>
+        <button class="remove" data-id="${i.id}">Remove</button>
+      `;
+      itemsEl.appendChild(row);
+    });
+
+    // EN/TA: Quantity buttons and input change
+    itemsEl.querySelectorAll("button[aria-label]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = +btn.dataset.id;
+        const item = cart.find(i => i.id === id);
+        if (!item) return;
+        const action = btn.dataset.action;
+        const newQty = action === "dec" ? item.qty - 1 : item.qty + 1;
+        updateQty(id, newQty);
+      });
+    });
+
+    itemsEl.querySelectorAll('input[type="number"]').forEach(inp => {
+      inp.addEventListener("input", () => {
+        const id = +inp.dataset.id;
+        const val = parseInt(inp.value, 10) || 1;
+        updateQty(id, val);
+      });
+    });
+
+    // EN/TA: Remove buttons
+    itemsEl.querySelectorAll("button.remove").forEach(btn => {
+      btn.addEventListener("click", () => removeItem(+btn.dataset.id));
+    });
+  }
+
+  // Totals
+  const { subtotal, tax, total } = calcTotals();
+  subEl.textContent = `₹${subtotal}`;
+  taxEl.textContent = `₹${tax}`;
+  totalEl.textContent = `₹${total}`;
+}
+
+// EN: Checkout 
+
+function checkout() {
+  if (cart.length === 0) {
+    alert("Cart is empty.");
+    return;
+    }
+  alert("Order placed!\nThank you for shopping.");
+  clearCart();
+}
+
+// EN: Init
+
+function init() {
+  renderProducts();
+  renderCart();
+  document.getElementById("checkoutBtn").addEventListener("click", checkout);
+  document.getElementById("clearBtn").addEventListener("click", clearCart);
+}
+document.addEventListener("DOMContentLoaded", init);
+  </script>
+
+
+<hr>
+
+<h1>task 4 </h1>
+
+
+<div class="order-box">
+  <h2>Food Order</h2>
+  <div id="orderSummary"></div>
+  <button onclick="addItem('Burger', 120)">Add Burger</button>
+  <button onclick="addItem('Pizza', 250)">Add Pizza</button>
+  <button onclick="removeItem()">Remove Last Item</button>
+  <button onclick="markDelivered()">Mark as Delivered</button>
+</div>
+
+
+<script>
+  // 📝 Order Object 
+  let orderr = {
+    restaurantName: "Foodies",
+    orderNumber: 120,
+    items: [],
+    totalPrice: 0,
+    isDelivered: false
+  };
+
+  // 🔹 Display Order Summary 
+  function displayOrder() {
+    let summary = `
+      <p><b>Restaurant:</b> ${order.restaurantName}</p>
+      <p><b>Order No:</b> ${order.orderNumber}</p>
+      <p><b>Items:</b> ${order.items.join(", ") || "No items yet"}</p>
+      <p><b>Total Price:</b> ₹${order.totalPrice}</p>
+      <p><b>Delivery Status:</b> 
+        <span class="status">${order.isDelivered ? "Delivered ✅" : "Pending ⏳"}</span>
+      </p>
+    `;
+    document.getElementById("orderSummary").innerHTML = summary;
+  }
+
+    // 🔹 Add Item 
+  function addItem(itemName, price) {
+    order.items.push(itemName);
+    order.totalPrice += price;
+    displayOrder();
+  }
+
+  // 🔹 Remove Last Item
+  function removeItem() {
+    if(order.items.length > 0) {
+      order.items.pop();
+      // For simplicity, reduce fixed price (not exact mapping)
+      order.totalPrice = order.totalPrice > 0 ? order.totalPrice - 100 : 0;
+    }
+    displayOrder();
+  }
+
+  // 🔹 Update Delivery Status 
+  function markDelivered() {
+    order.isDelivered = true;
+    displayOrder();
+  }
+
+  // Initial Display
+  displayOrder();
+</script>
+
+<hr>
+
+<h1>task 5 </h1>
+
+  <div class="container">
+    <h2>Grade Calculator</h2>
+    <label>Student Name:</label>
+    <input type="text" id="name" placeholder="Enter name">
+
+    <label>Subject 1 Marks:</label>
+    <input type="number" id="sub1">
+
+    <label>Subject 2 Marks:</label>
+    <input type="number" id="sub2">
+
+    <label>Subject 3 Marks:</label>
+    <input type="number" id="sub3">
+
+    <label>Subject 4 Marks (optional):</label>
+    <input type="number" id="sub4">
+
+    <label>Subject 5 Marks (optional):</label>
+    <input type="number" id="sub5">
+
+    <button onclick="calculateGrade()">Calculate</button>
+
+    <pre id="output"></pre>
+  </div>
+
+    <script>
+    function calculateGrade() {
+      const name = document.getElementById("name").value;
+      const marks = [
+        document.getElementById("sub1").value,
+        document.getElementById("sub2").value,
+        document.getElementById("sub3").value,
+        document.getElementById("sub4").value,
+        document.getElementById("sub5").value
+      ].filter(m => m !== "").map(Number);
+
+      if (name === "" || marks.length < 3) {
+        alert("Please enter name and at least 3 subjects!");
+        return;
+      }
+
+      const total = marks.reduce((a, b) => a + b, 0);
+      const average = total / marks.length;
+
+           let grade;
+      if (average >= 90) grade = "A";
+      else if (average >= 80) grade = "B";
+      else if (average >= 70) grade = "C";
+      else if (average >= 60) grade = "D";
+      else grade = "F";
+
+      const report = `
+Student Name: ${name}
+Subjects: ${marks.length}
+Total Marks: ${total}
+Average: ${average.toFixed(2)}
+Grade: ${grade}
+      `;
+
+      document.getElementById("output").textContent = report;
+      console.log(report); // also logs in console
+    }
+  </script>
+
+<hr>
+
+<h1>task 6 </h1>
+
+  <div class="container">
+    <h2>Simple Interest Calculator</h2>
+    <button onclick="calculateSI()">Calculate Interest</button>
+  </div>
+
+  <script>
+    function calculateSI() {
+      // Prompt user for inputs
+      let P = parseFloat(prompt("Enter Principal Amount:"));
+      let R = parseFloat(prompt("Enter Rate of Interest (%):"));
+      let T = parseFloat(prompt("Enter Time (in years):"));
+
+      // Formula: SI = (P × R × T) / 100
+      let SI = (P * R * T) / 100;
+      let total = P + SI;
+
+      // Show result
+      alert("Simple Interest: " + SI.toFixed(2) +
+            "\nTotal Amount Payable: " + total.toFixed(2));
+    }
+  </script>
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

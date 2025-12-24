@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAY 2</title>
+    <link rel="stylesheet" href="DAY 2.CSS">
+</head>
+<body>
+    
+    <h1>TASK 1 </h1>
+
+      <div class="card">
+    <h2>Voting Eligibility System</h2>
+
+    <!-- Inputs for quick testing (optional UI). The result is printed to console. -->
+    <div class="row">
+      <div>
+        <label for="citizen">Country</label><br />
+        <select id="citizen">
+          <option value="India" selected>India</option>
+          <option value="USA">USA</option>
+          <option value="UK">UK</option>
+          <option value="Canada">Canada</option>
+        </select>
+      </div>
+      <div>
+        <label for="age">Age</label><br />
+        <input id="age" type="number" min="0" value="18" />
+      </div>
+    </div>
+
+    
+    <div class="row">
+      <button id="checkBtn">Check eligibility (Console)</button>
+      <button id="demoBtn">Run quick</button>
+    </div>
+      </div>
+  <script>
+
+
+    function checkEligibility(citizen, age) {
+      // Ensure age is a number
+      const numericAge = Number(age);
+
+      // Condition check
+      const isEligible = numericAge >= 18 && citizen === "India";
+
+      // Exact messages as specified
+      const message = isEligible ? "Eligible to Vote" : "Not Eligible to Vote";
+
+     // Print to console
+      console.log(`Citizen: ${citizen}, Age: ${numericAge} -> ${message}`);
+
+      // Return for reuse if needed
+      return message;
+    }
+
+    // Button: Check eligibility using current UI values
+    document.getElementById("checkBtn").addEventListener("click", () => {
+      const citizen = document.getElementById("citizen").value; // variable: citizen
+      const age = document.getElementById("age").value;         // variable: age
+      checkEligibility(citizen, age);
+    });
+
+    // Quick demo runs a few test cases to show behavior in console
+    document.getElementById("demoBtn").addEventListener("click", () => {
+      console.log("---- Quick Demos ----");
+      checkEligibility("India", 18);   // Eligible
+      checkEligibility("India", 17);   // Not Eligible (age < 18)
+      checkEligibility("USA", 25);     // Not Eligible (citizen not India)
+      checkEligibility("India", 60);   // Eligible
+      checkEligibility("UK", 18);      // Not Eligible
+      console.log("----------------------");
+    });
+
+    </script>
+
+
+<hr>
+
+<h1>TASK 2 </h1>
+
+
+  <div class="converter">
+    <h2> Celsius ➝ Fahrenheit</h2>
+    <input type="number" id="celsius" placeholder="Enter &deg;C">
+    <button onclick="convertTemp()">Convert</button>
+    <p id="result"></p>
+  </div>
+
+  <script>
+    function convertTemp() {
+      // 1. Store Celsius value in a variable
+      let celsius = document.getElementById("celsius").value;
+
+      // 2. Apply conversion formula
+      let fahrenheit = (celsius * 9/5) + 32;
+
+      // 3. Display result in console
+      console.log("Temperature in Fahrenheit: " + fahrenheit);
+
+      // 4. Show result on the webpage too
+      document.getElementById("result").innerText = 
+        celsius + "°C = " + fahrenheit.toFixed(2) + "°F";
+    }
+  </script>
+
+<hr>
+
+
+<h1>TASK 3 </h1>
+
+  <div class="calculator">
+    <h2>Discount Calculator</h2>
+    <label for="price">Original Price (₹)</label>
+    <input type="number" id="price" placeholder="Enter price">
+
+    <label for="discount">Discount (%)</label>
+    <input type="number" id="discount" placeholder="Enter discount">
+
+    <button onclick="calculateDiscount()">Calculate</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculateDiscount() {
+      let price = document.getElementById("price").value;
+      let discount = document.getElementById("discount").value;
+
+      if(price === "" || discount === "") {
+        document.getElementById("result").innerHTML = " Please enter both values.";
+        return;
+      }
+
+      price = parseFloat(price);
+      discount = parseFloat(discount);
+
+      let discountAmount = (price * discount) / 100;
+      let finalPrice = price - discountAmount;
+
+      document.getElementById("result").innerHTML = 
+        `Discount Amount: ₹${discountAmount.toFixed(2)} <br> Final Price: ₹${finalPrice.toFixed(2)}`;
+    }
+  </script>
+<hr>
+
+
+<h1>TASK 4 </h1>
+
+ <div class="signup-box">
+    <h2>Signup Page</h2>
+    <label for="age">Enter your age:</label><br>
+    <input type="number" id="age" placeholder="Your age"><br>
+    <button onclick="verifyAge()">Submit</button>
+  </div>
+
+  <script>
+    function verifyAge() {
+      // 1. Store user's age in a variable
+      let userAge = document.getElementById("age").value;
+
+      // 2. Check if user is 18 or older
+      if (userAge >= 18) {
+        console.log("Access Granted"); // 3. Eligible
+      } else {
+        console.log("Access Denied");  // 3. Not eligible
+      }
+    }
+  </script>
+
+<hr>
+
+<h1>TASK 5 </h1>
+
+<h2>Bill Splitter with Tip</h2>
+
+  <label>Total Bill (₹): <input id="bill" type="number"></label>
+  <label>Number of People: <input id="people" type="number"></label>
+  <label>Tip %: <input id="tip" type="number"></label>
+
+  <button onclick="calculate()">Calculate</button>
+
+  <div class="result" id="output"></div>
+
+  <script>
+    function calculate() {
+      let bill = parseFloat(document.getElementById('bill').value) || 0;
+      let people = parseInt(document.getElementById('people').value) || 1;
+      let tipPercent = parseFloat(document.getElementById('tip').value) || 0;
+
+      let tipAmount = bill * (tipPercent / 100);
+      let totalWithTip = bill + tipAmount;
+      let perPerson = totalWithTip / people;
+
+  document.getElementById('output').innerHTML =
+        "Tip Amount: ₹" + tipAmount.toFixed(2) + "<br>" +
+        "Total with Tip: ₹" + totalWithTip.toFixed(2) + "<br>" +
+        "Each Person Pays: ₹" + perPerson.toFixed(2);
+    }
+  </script>
+<hr>
+
+
+<h1>TASK 6 </h1>
+
+  <main class="card" role="form" aria-labelledby="title">
+    <h1 id="title" class="title">BMI Calculator</h1>
+    <p class="subtitle">Enter weight in kilograms and height in meters.</p>
+
+    <div class="row">
+      <div>
+        <label for="weight">Weight (kg) </label>
+        <input id="weight" type="number" inputmode="decimal" step="0.1" min="1" placeholder="e.g., 65.5" />
+      </div>
+      <div>
+        <label for="height">Height (m)</label>
+        <input id="height" type="number" inputmode="decimal" step="0.01" min="0.5" placeholder="e.g., 1.72" />
+      </div>
+    </div>
+   <button id="calcBtn">Calculate BMI</button>
+
+    <div id="output" class="result" aria-live="polite">
+      Enter values and click Calculate.
+    </div>
+
+  
+  </main>
+
+  <script>
+    // BMI = weight / (height * height)
+    function getCategory(bmi) {
+      if (bmi < 18.5) return "Underweight";
+      if (bmi < 25) return "Normal";
+      if (bmi < 30) return "Overweight";
+      return "Obese";
+    }
+
+    function formatBMI(n) {
+      return Number.isFinite(n) ? n.toFixed(2) : "";
+    }
+
+    document.getElementById("calcBtn").addEventListener("click", () => {
+      const weight = parseFloat(document.getElementById("weight").value);
+      const height = parseFloat(document.getElementById("height").value);
+      const out = document.getElementById("output");
+
+      // Basic validation: positive numbers, sensible ranges
+      if (!Number.isFinite(weight) || !Number.isFinite(height)) {
+        out.textContent = "Please enter valid numbers for weight and height. ";
+        return;
+      }
+  if (weight <= 0 || height <= 0) {
+        out.textContent = "Values must be greater than zero. ";
+        return;
+      }
+
+      const bmi = weight / (height * height);
+      const cat = getCategory(bmi);
+
+      // Build result with a colored badge
+      out.innerHTML = `
+        <strong>BMI:</strong> ${formatBMI(bmi)}
+        <span class="badge ${cat}">${cat}</span>
+        <div style="margin-top:6px;color:#555;">
+     : <strong>${cat}</strong>.
+        </div>
+      `;
+    });
+  </script>
+
+
+
+
+
+
+
+</body>
+</html>

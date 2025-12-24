@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>day 4</title>
+
+    <link rel="stylesheet" href="day 4.css">
+</head>
+<body>
+    <h1>task 1</h1>
+     <div class="card">
+      <h2>Multiplication Table Generator</h2>
+  <p>Enter a number: <input type="number" id="numInput" /></p>
+  <button onclick="generateTable()">Generate</button>
+
+  <div id="outputt"></div>
+</div>
+  <script>
+    function generateTable() {
+      // Step 1: Get user input
+      let num = document.getElementById("numInput").value;
+      let outputDiv = document.getElementById("output");
+      outputDiv.innerHTML = ""; // Clear previous results
+
+      // Step 2: Loop from 1 to 10
+      for (let i = 1; i <= 10; i++) {
+        // Step 3: Multiply input number with loop counter
+        let result = num * i;
+
+        // Step 4: Display formatted output
+        outputDiv.innerHTML += `${num} x ${i} = ${result}<br>`;
+      }
+    }
+  </script>
+
+<hr>
+
+
+<h1> task 2 </h1>
+
+
+<div class="container1">
+    <h2>Sum of Digits Calculator</h2>
+    <input type="number" id="numberInput" placeholder="Enter a positive number">
+    <br>
+    <button onclick="calculateSum()">Calculate</button>
+    <p id="result"></p>
+  </div>
+
+  <script>
+    function calculateSum() {
+      let num = document.getElementById("numberInput").value;
+      let sum = 0;
+
+      // Convert input to integer
+      num = parseInt(num);
+
+      // Check if input is valid
+      if (isNaN(num) || num < 0) {
+        document.getElementById("result").innerText = "Please enter a valid positive number.";
+        return;
+      }
+   // While loop to extract digits and sum them
+      while (num > 0) {
+        let digit = num % 10;   // Extract last digit
+        sum += digit;           // Add to sum
+        num = Math.floor(num / 10); // Remove last digit
+      }
+
+      // Display result
+      document.getElementById("result").innerText = "Sum of digits: " + sum;
+    }
+  </script>
+
+  <hr>
+
+  <h1> task 3 </h1>
+
+    <div class="containerr">
+    <h2>Multiples of a Number Finder</h2>
+    <input type="number" id="numberInput" placeholder="Enter a positive number">
+    <br>
+    <button onclick="findMultiples()">Find Multiples</button>
+    <p id="result"></p>
+  </div>
+
+  <script>
+    function findMultiples() {
+      let num = document.getElementById("numberInput").value;
+      num = parseInt(num);
+
+      if (isNaN(num) || num <= 0) {
+        document.getElementById("result").innerText = "Please enter a valid positive number.";
+        return;
+      }
+
+      let multiples = [];
+      // Loop from 1 to 100
+      for (let i = 1; i <= 100; i++) {
+        if (i % num === 0) {
+          multiples.push(i);
+        }
+      }
+
+      // Display result
+      document.getElementById("result").innerText = 
+        "Multiples of " + num + " between 1 and 100: " + multiples.join(", ");
+    }
+  </script>
+  <hr>
+
+
+  <h1> task 4  </h1>
+
+  <h2>Star Pattern</h2>
+  <button onclick="generate()">Generate</button>
+  <pre id="output"></pre>
+
+  <script>
+    function generate() {
+      let rows = 5;          
+      let ch = "*";        
+      let result = "";
+
+      for (let i = 1; i <= rows; i++) {
+        // i stars
+        for (let j = 1; j <= i; j++) {
+          result += ch + " ";
+        }
+        result += "\n"; // next line
+      }
+
+      document.getElementById("output").textContent = result;
+    }
+  </script>
+
+<hr>
+
+
+<h1>task 5 </h1>
+
+  <div class="box">
+    <h2>ATM Machine</h2>
+
+    <!-- PIN login -->
+    <div id="login">
+      <label>Enter PIN:</label>
+      <input type="password" id="pin" maxlength="4">
+      <button onclick="login()">Login</button>
+      <p id="loginMsg"></p>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" style="display:none;">
+      <p>Balance: <span id="balance">10000</span></p>
+      <label>Withdraw Amount:</label>
+      <input type="number" id="amount">
+      <button onclick="withdraw()">Withdraw</button>
+      <p id="dashMsg"></p>
+    </div>
+  </div>
+
+  
+  <script>
+    let balance = 10000;
+    const PIN = "1234";
+
+    function login() {
+      const pin = document.getElementById("pin").value;
+      if(pin === PIN) {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+      } else {
+        document.getElementById("loginMsg").textContent = "Wrong PIN!";
+        document.getElementById("loginMsg").className = "error";
+      }
+    }
+  function withdraw() {
+      const amt = parseInt(document.getElementById("amount").value);
+      const msg = document.getElementById("dashMsg");
+      if(isNaN(amt) || amt <= 0) {
+        msg.textContent = "Enter valid amount";
+        msg.className = "error";
+        return;
+      }
+      if(amt > balance) {
+        msg.textContent = "Insufficient balance";
+        msg.className = "error";
+        return;
+      }
+      balance -= amt;
+      document.getElementById("balance").textContent = balance;
+      msg.textContent = "Withdrawn: " + amt;
+      msg.className = "note";
+    }
+  </script>
+<hr>
+
+
+<h1>task 6</h1>
+
+  <h1>Shopping Cart Demo</h1>
+  <p>Type item name and price to add. Type "exit" to stop.</p>
+
+  <button onclick="addItem()">Add Item</button>
+
+  <div class="cart">
+    <h2>Your Cart</h2>
+    <ul id="cartItems"></ul>
+    <div class="total">Total: ₹<span id="totalPrice">0</span></div>
+  </div>
+
+  <script>
+    let cart = [];
+
+    function addItem() {
+      let name = prompt("Enter item name (or type 'exit' to stop):");
+      if (!name || name.toLowerCase() === "exit") return;
+
+      let price = parseFloat(prompt("Enter item price:"));
+      if (isNaN(price)) {
+        alert("Invalid price!");
+        return;
+      }
+
+      cart.push({ name, price });
+      renderCart();
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      renderCart();
+    }
+
+
+    function renderCart() {
+      let cartList = document.getElementById("cartItems");
+      cartList.innerHTML = "";
+
+      let total = 0;
+      cart.forEach((item, index) => {
+        total += item.price;
+        let li = document.createElement("li");
+        li.innerHTML = `${item.name} - ₹${item.price.toFixed(2)} 
+          <button onclick="removeItem(${index})">X</button>`;
+        cartList.appendChild(li);
+      });
+
+      document.getElementById("totalPrice").textContent = total.toFixed(2);
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
