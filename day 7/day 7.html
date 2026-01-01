@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 7 </title>
+    <link rel="stylesheet" href="day 7.css">
+</head>
+<body>
+    <h1>task 1</h1>
+
+  <h2>Employee Management System</h2>
+  
+  <label>Name: <input type="text" id="name"></label>
+  <label>Position: <input type="text" id="position"></label>
+  <label>Salary: <input type="number" id="salary"></label>
+  <button onclick="addEmployee()">Add Employee</button>
+  
+  <table id="employeeTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Position</th>
+        <th>Salary</th>
+        <th>Increase Salary</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <script>
+    // Constructor function
+    function Employee(name, position, salary) {
+      this.name = name;
+      this.position = position;
+      this.salary = salary;
+      this.increaseSalary = function(amount) {
+        this.salary += amount;
+      };
+    }
+
+    // Array to store employees
+    let employees = [];
+
+    // Add employee
+    function addEmployee() {
+      let name = document.getElementById("name").value;
+      let position = document.getElementById("position").value;
+      let salary = parseFloat(document.getElementById("salary").value);
+
+      if(name && position && salary) {
+        let emp = new Employee(name, position, salary);
+        employees.push(emp);
+        displayEmployees();
+      }
+    }
+    // Display employees in table
+    function displayEmployees() {
+      let tbody = document.querySelector("#employeeTable tbody");
+      tbody.innerHTML = "";
+      employees.forEach((emp, index) => {
+        let row = `<tr>
+          <td>${emp.name}</td>
+          <td>${emp.position}</td>
+          <td>${emp.salary}</td>
+          <td><button onclick="increase(${index})">+1000</button></td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
+    // Increase salary
+    function increase(index) {
+      employees[index].increaseSalary(1000);
+      displayEmployees();
+    }
+  </script>
+
+<hr>
+
+
+<h1>task 2</h1>
+
+
+  <h2 class="system">Library Management System</h2>
+  
+  <!-- Add Book Form -->
+  <label>Title: <input type="text" id="title"></label>
+  <label>Author: <input type="text" id="author"></label>
+  <label>Year: <input type="number" id="year"></label>
+  <button onclick="addBook()">Add Book</button>
+  
+  <!-- Search -->
+  <br><br>
+  <label>Search by Title: <input type="text" id="search" onkeyup="filterBooks()"></label>
+  
+  <!-- Book Table -->
+  <table id="bookTable">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Year</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    // Constructor function
+    function Book(title, author, year) {
+      this.title = title;
+      this.author = author;
+      this.year = year;
+    }
+
+    // Array to store books
+    let books = [];
+
+    // Add book
+    function addBook() {
+      let title = document.getElementById("title").value;
+      let author = document.getElementById("author").value;
+      let year = document.getElementById("year").value;
+
+      if(title && author && year) {
+        let book = new Book(title, author, year);
+        books.push(book);
+        displayBooks(books);
+      }
+    }
+
+   // Display books in table
+    function displayBooks(bookArray) {
+      let tbody = document.querySelector("#bookTable tbody");
+      tbody.innerHTML = "";
+      bookArray.forEach(book => {
+        let row = `<tr>
+          <td>${book.title}</td>
+          <td>${book.author}</td>
+          <td>${book.year}</td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+      // Filter books by title
+    function filterBooks() {
+      let searchValue = document.getElementById("search").value.toLowerCase();
+      let filtered = books.filter(book => book.title.toLowerCase().includes(searchValue));
+      displayBooks(filtered);
+    }
+  </script>
+<hr>
+
+
+<h1>task 3</h1>
+
+  <div class="container1">
+    <h2> Student Record Manager</h2>
+    <input type="text" id="name" placeholder="Enter Student Name">
+    <input type="text" id="roll" placeholder="Enter Roll Number">
+    <input type="number" id="marks" placeholder="Enter Marks (0-100)">
+    <button onclick="addStudent()">Add Student</button>
+
+    <table id="studentTable">
+      <thead class="thead">
+        <tr>
+          <th>Name</th>
+          <th>Roll No</th>
+          <th>Marks</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+
+      <script>
+    // Constructor Function
+    function Student(name, roll, marks) {
+      this.name = name;
+      this.roll = roll;
+      this.marks = marks;
+    }
+
+    // Prototype Method to calculate grade
+    Student.prototype.getGrade = function() {
+      if (this.marks >= 90) return "A+";
+      else if (this.marks >= 75) return "A";
+      else if (this.marks >= 60) return "B";
+      else if (this.marks >= 40) return "C";
+      else return "F";
+    };
+    // Array to store students
+    let students = [];
+
+    // Function to add student
+    function addStudent() {
+      let name = document.getElementById("name").value;
+      let roll = document.getElementById("roll").value;
+      let marks = parseInt(document.getElementById("marks").value);
+
+      if(name && roll && !isNaN(marks)) {
+        let student = new Student(name, roll, marks);
+        students.push(student);
+        displayStudents();
+        // Clear inputs
+        document.getElementById("name").value = "";
+        document.getElementById("roll").value = "";
+        document.getElementById("marks").value = "";
+      } else {
+        alert("Please fill all fields correctly!");
+      }
+    }
+
+   // Function to display students
+    function displayStudents() {
+      let tbody = document.querySelector("#studentTable tbody");
+      tbody.innerHTML = "";
+      students.forEach(stu => {
+        let row = `<tr>
+          <td>${stu.name}</td>
+          <td>${stu.roll}</td>
+          <td>${stu.marks}</td>
+          <td>${stu.getGrade()}</td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+  </script>
+<hr>
+
+<h1>task 4</h1>
+
+  <h1> Budget Manager</h1>
+
+  <section>
+    <h2>Add Income</h2>
+    <form id="income-form">
+      <input type="text" id="income-desc" placeholder="Description" required>
+      <input type="number" id="income-amt" placeholder="Amount" required>
+      <button type="submit">Add Income</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Add Expense</h2>
+    <form id="expense-form">
+      <input type="text" id="expense-desc" placeholder="Description" required>
+      <input type="number" id="expense-amt" placeholder="Amount" required>
+      <button type="submit">Add Expense</button>
+    </form>
+  </section>
+
+  <section id="display">
+    <p><strong>Total Income:</strong> ₹0</p>
+    <p><strong>Total Expense:</strong> ₹0</p>
+    <p><strong>Balance:</strong> ₹0</p>
+  </section>
+
+ <script>
+const incomeForm = document.getElementById("income-form");
+const expenseForm = document.getElementById("expense-form");
+const display = document.getElementById("display");
+
+incomeForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const desc = document.getElementById("income-desc").value;
+  const amt = parseFloat(document.getElementById("income-amt").value);
+  budget.addIncome(desc, amt);
+  updateDisplay();
+  incomeForm.reset();
+});
+
+expenseForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const desc = document.getElementById("expense-desc").value;
+  const amt = parseFloat(document.getElementById("expense-amt").value);
+  budget.addExpense(desc, amt);
+  updateDisplay();
+  expenseForm.reset();
+});
+
+function updateDisplay() {
+  const { totalIncome, totalExpense, balance } = budget.getBalance();
+  display.innerHTML = `
+    <p><strong>Total Income:</strong> ₹${totalIncome}</p>
+    <p><strong>Total Expense:</strong> ₹${totalExpense}</p>
+    <p><strong>Balance:</strong> ₹${balance}</p>
+  `;
+}
+ </script>
+<script>
+  // budget.js
+function createBudget() {
+  let incomes = [];
+  let expenses = [];
+
+  function addIncome(description, amount) {
+    incomes.push({ description, amount });
+  }
+
+  function addExpense(description, amount) {
+    expenses.push({ description, amount });
+  }
+
+  function getBalance() {
+    const totalIncome = incomes.reduce((sum, i) => sum + i.amount, 0);
+    const totalExpense = expenses.reduce((sum, e) => sum + e.amount, 0);
+    return {
+      totalIncome,
+      totalExpense,
+      balance: totalIncome - totalExpense
+    };
+  }
+
+  return { addIncome, addExpense, getBalance };
+}
+
+
+</script>
+
+<hr>
+
+<h1>task 5</h1>
+
+  <h1> Shopping Cart Demo</h1>
+
+  <!-- Product List -->
+  <div class="products">
+    <div class="product">
+      <h3>Apple</h3>
+      <p>₹20</p>
+      <button onclick="addToCart('Apple', 20)">Add to Cart</button>
+    </div>
+    <div class="product">
+      <h3>Orange</h3>
+      <p>₹15</p>
+      <button onclick="addToCart('Orange', 15)">Add to Cart</button>
+    </div>
+    <div class="product">
+      <h3>Mango</h3>
+      <p>₹30</p>
+      <button onclick="addToCart('Mango', 30)">Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Cart Section -->
+  <h2>🛒 Your Cart</h2>
+  <ul id="cart"></ul>
+  <p id="total">Total: ₹0</p>
+
+  <script>
+
+let cart = [];
+let total = 0;
+
+function addToCart(product, price) {
+  cart.push({ product, price });
+  total += price;
+  displayCart();
+}
+
+function displayCart() {
+  const cartList = document.getElementById("cart");
+  cartList.innerHTML = "";
+  cart.forEach(item => {
+    let li = document.createElement("li");
+    li.textContent = `${item.product} - ₹${item.price}`;
+    cartList.appendChild(li);
+  });
+  document.getElementById("total").textContent = `Total: ₹${total}`;
+}
+  </script>
+<hr>
+
+<h1>task 6</h1>
+
+  <div class="container2">
+    <h2>Bank Account</h2>
+    <input type="number" id="amount" placeholder="Enter amount">
+    <br>
+    <button onclick="deposit()">Deposit</button>
+    <button onclick="withdraw()">Withdraw</button>
+    <div class="balance" id="balance">Balance: ₹0</div>
+  </div>
+ 
+ <script>
+    function BankAccount(accountNumber, balance) {
+      this.accountNumber = accountNumber;
+      this.balance = balance;
+      this.deposit = function(amount) {
+        if(amount > 0) this.balance += amount;
+      };
+      this.withdraw = function(amount) {
+        if(amount > 0 && amount <= this.balance) this.balance -= amount;
+      };
+      this.getBalance = function() { return this.balance; };
+    }
+
+    let myAccount = new BankAccount("123456", 0);
+
+
+    function deposit() {
+      let amount = parseFloat(document.getElementById("amount").value);
+      if(isNaN(amount) || amount <= 0) { alert("Enter valid amount"); return; }
+      myAccount.deposit(amount);
+      updateBalance();
+    }
+
+    function withdraw() {
+      let amount = parseFloat(document.getElementById("amount").value);
+      if(isNaN(amount) || amount <= 0) { alert("Enter valid amount"); return; }
+      if(amount > myAccount.getBalance()) { alert("Insufficient balance"); return; }
+      myAccount.withdraw(amount);
+      updateBalance();
+    }
+
+    function updateBalance() {
+      document.getElementById("balance").innerText = "Balance: ₹" + myAccount.getBalance();
+      document.getElementById("amount").value = "";
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

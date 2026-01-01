@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>day 6 </title>
+    <link rel="stylesheet" href="day 6.css">
+</head>
+<body>
+    <h1>task 1</h1>
+
+  <div class="container">
+    <h2>Movie Booking</h2>
+    <input type="text" id="movieInput" placeholder="Enter movie name">
+    <button onclick="bookMovie()">Book Ticket</button>
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    // 1. Movie List Storage
+    const movies = ["Avatar", "Inception", "Titanic", "Interstellar", "The Dark Knight"];
+
+    // 2. User Input + 3. Check Availability
+    function bookMovie() {
+      const userMovie = document.getElementById("movieInput").value.trim();
+      const messageBox = document.getElementById("message");
+
+      if (userMovie === "") {
+        messageBox.textContent = "Please enter a movie name.";
+        messageBox.style.color = "red";
+        return;
+      }    if (movies.includes(userMovie)) {
+        // 4. Booking Confirmation
+        messageBox.textContent = "✅ Ticket booked for " + userMovie;
+        messageBox.style.color = "green";
+      } else {
+        messageBox.textContent = "❌ Movie not available";
+        messageBox.style.color = "red";
+      }
+    }
+  </script>
+
+<HR>
+
+<h1>task 2</h1>
+ <h2>Product Inventory System</h2>
+
+  <!-- Add Product -->
+  <input type="text" id="productName" placeholder="Product Name">
+  <input type="number" id="productQty" placeholder="Quantity">
+  <button onclick="addProduct()">Add Product</button>
+
+  <!-- Remove Product -->
+  <input type="text" id="removeName" placeholder="Remove by Name">
+  <button onclick="removeProduct()">Remove Product</button>
+
+  <!-- Display Inventory -->
+  <div id="inventory"></div>
+
+  <script>
+    // 1. Inventory Storage
+    let inventory = [];
+
+    // 2. Add Product Function
+    function addProduct() {
+      let name = document.getElementById("productName").value;
+      let qty = parseInt(document.getElementById("productQty").value);
+
+      if(name && qty > 0){
+        inventory.push({name: name, quantity: qty});
+        displayInventory();
+      }
+    }
+
+    // 3. Remove Product Function
+    function removeProduct() {
+      let removeName = document.getElementById("removeName").value;
+      inventory = inventory.filter(item => item.name !== removeName);
+      displayInventory();
+    }
+    // 4. Display Updated Inventory
+    function displayInventory() {
+      let invDiv = document.getElementById("inventory");
+      invDiv.innerHTML = "<h3>Current Inventory:</h3>";
+      inventory.forEach(item => {
+        invDiv.innerHTML += `<div class="product">${item.name} - Qty: ${item.quantity}</div>`;
+      });
+    }
+  </script>
+<hr>
+
+<h1>task 3 </h1>
+  <h2>Library Book Tracker</h2>
+
+  <!-- All Books -->
+  <div class="book-list">
+    <h3>Available Books</h3>
+    <div id="books"></div>
+  </div>
+
+  <!-- Borrowed Books -->
+  <div class="borrowed-list">
+    <h3>Borrowed Books</h3>
+    <div id="borrowed"></div>
+  </div>
+
+  <script>
+    // Array of book objects 
+    let books = [
+      { title: "The Alchemist", author: "Paulo Coelho", isBorrowed: false },
+      { title: "Wings of Fire", author: "A.P.J. Abdul Kalam", isBorrowed: false },
+      { title: "Harry Potter", author: "J.K. Rowling", isBorrowed: false }
+    ];
+
+    // Function to display books
+    function displayBooks() {
+      const booksDiv = document.getElementById("books");
+      booksDiv.innerHTML = "";
+      books.forEach((book, index) => {
+    const bookEl = document.createElement("div");
+        bookEl.className = "book";
+        bookEl.textContent = `${book.title} - ${book.author}`;
+        
+        if (!book.isBorrowed) {
+          const borrowBtn = document.createElement("button");
+          borrowBtn.textContent = "Borrow";
+          borrowBtn.onclick = () => borrowBook(index);
+          bookEl.appendChild(borrowBtn);
+        } else {
+          const returnBtn = document.createElement("button");
+          returnBtn.textContent = "Return";
+          returnBtn.onclick = () => returnBook(index);
+          bookEl.appendChild(returnBtn);
+        }
+        booksDiv.appendChild(bookEl);
+      });
+
+      displayBorrowed();
+    }
+    // Borrow a book (புத்தகம் எடுக்க)
+    function borrowBook(index) {
+      books[index].isBorrowed = true;
+      displayBooks();
+    }
+
+    // Return a book (புத்தகம் திருப்பி கொடுக்க)
+    function returnBook(index) {
+      books[index].isBorrowed = false;
+      displayBooks();
+    }
+
+    // Show borrowed books list
+    function displayBorrowed() {
+      const borrowedDiv = document.getElementById("borrowed");
+      borrowedDiv.innerHTML = "";
+      books.forEach(book => {
+        if (book.isBorrowed) {
+          const bookEl = document.createElement("div");
+          bookEl.textContent = `${book.title} - ${book.author}`;
+          borrowedDiv.appendChild(bookEl);
+        }
+      });
+    }
+    // Initial display
+    displayBooks();
+  </script>
+<hr>
+
+
+<h1>task 4</h1>
+
+  <!-- Remove Employee -->
+  <p>
+    Remove by Name: <input id="removeName">
+    <button onclick="removeEmployee()">Remove</button>
+  </p>
+
+  <!-- Display -->
+  <h3>Employees:</h3>
+  <div id="employees"></div>
+
+  <h3>Average Salary:</h3>
+  <div id="average"></div>
+
+  <h3>Roles:</h3>
+  <div id="roles"></div>
+  <!-- Add Employee -->
+  <p>
+    Name: <input id="name">
+    Role: <input id="role">
+    Salary: <input id="salary" type="number">
+    <button onclick="addEmployee()">Add</button>
+  </p>
+
+
+
+  <script>
+    // Employees stored as objects
+    let employees = [
+      { name: "Karthi", role: "Developer", salary: 30000 },
+      { name: "Priya", role: "Designer", salary: 28000 }
+    ];
+
+    function displayEmployees() {
+      // Show all employees
+      document.getElementById("employees").innerHTML =
+        employees.map(e => `${e.name} - ${e.role} - ₹${e.salary}`).join("<br>");
+
+      // Average salary
+      let total = employees.reduce((sum, e) => sum + e.salary, 0);
+      let avg = employees.length ? (total / employees.length).toFixed(2) : 0;
+      document.getElementById("average").innerText = avg;
+
+      // Unique roles
+      let roles = [...new Set(employees.map(e => e.role))];
+      document.getElementById("roles").innerText = roles.join(", ");
+    
+   function addEmployee() {
+      let name = document.getElementById("name").value;
+      let role = document.getElementById("role").value;
+      let salary = parseFloat(document.getElementById("salary").value);
+      if(name && role && salary) {
+        employees.push({ name, role, salary });
+        displayEmployees();
+      }
+    }
+
+    function removeEmployee() {
+      let removeName = document.getElementById("removeName").value;
+      employees = employees.filter(e => e.name !== removeName);
+      displayEmployees();
+    }
+
+    // Initial display
+    displayEmployees();
+}
+  </script>
+<hr>
+
+<h1>task 5</h1>
+
+
+  <h2>Product Inventory System</h2>
+
+  <!-- Add Product -->
+  <p>
+    Product Name: <input id="pname">
+    Quantity: <input id="pqty" type="number">
+    <button onclick="addProduct()">Add</button>
+  </p>
+
+  <!-- Remove Product -->
+  <p>
+    Remove by Name: <input id="removeName">
+    <button onclick="removeProduct()">Remove</button>
+  </p>
+
+  <!-- Display Products -->
+  <h3>Products in Stock:</h3>
+  <div id="products"></div>
+
+
+  <script>
+    // Products stored as objects 
+    let products = [
+      { name: "Laptop", qty: 10 },
+      { name: "Mouse", qty: 25 }
+    ];
+
+    // Display products
+    function displayProducts() {
+      document.getElementById("products").innerHTML =
+        products.map(p => `${p.name} - Qty: ${p.qty}`).join("<br>");
+    }
+
+    // Add product
+    function addProduct() {
+      let name = document.getElementById("pname").value;
+      let qty = parseInt(document.getElementById("pqty").value);
+      if(name && qty) {
+        products.push({ name, qty });
+        displayProducts();
+      }
+    }
+    // Remove product by name 
+    function removeProduct() {
+      let removeName = document.getElementById("removeName").value;
+      products = products.filter(p => p.name !== removeName);
+      displayProducts();
+    }
+
+    // Initial display
+    displayProducts();
+  </script>
+
+<hr>
+
+
+<h1>task 6</h1>
+
+  <h2>Student Records</h2>
+  <div id="output"></div>
+
+  <script>
+    // 1. Student Data Storage
+    const students = [
+      { name: "Arun", age: 20, marks: 85 },
+      { name: "Priya", age: 19, marks: 92 },
+      { name: "Karthi", age: 21, marks: 78 },
+      { name: "Meena", age: 20, marks: 88 }
+    ];
+
+    let totalMarks = 0;
+    let outputDiv = document.getElementById("output");
+ // 2. Looping Through Students
+    students.forEach(student => {
+      totalMarks += student.marks;
+
+      // 4. Display Output
+      outputDiv.innerHTML += `
+        <div class="student">
+          Name: ${student.name} <br>
+          Age: ${student.age} <br>
+          Marks: ${student.marks}
+        </div>
+      `;
+    });
+
+    // 3. Calculate Average Marks
+    let average = totalMarks / students.length;
+
+    // Display class average
+    outputDiv.innerHTML += `<div class="average">Class Average: ${average.toFixed(2)}</div>`;
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

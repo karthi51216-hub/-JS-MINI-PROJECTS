@@ -1,0 +1,132 @@
+/*task 1*/
+
+  body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+  
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 300px;
+    }
+    h2 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+  input {
+      padding: 8px;
+      width: 90%;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px 15px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .message {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    /*task 2*/
+
+     body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f4f4f4;
+    }
+    h2 {
+      color: #333;
+    }
+    input, button {
+      margin: 5px;
+      padding: 8px;
+    }
+    #inventory {
+      margin-top: 20px;
+      background: #fff;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+    .product {
+      padding: 5px;
+      border-bottom: 1px solid #ddd;
+    }
+
+
+    /*task 3*/
+
+
+  body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h2 {
+      color: #2c3e50;
+    }
+    .book-list, .borrowed-list {
+      margin-top: 15px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .book {
+      margin: 5px 0;
+    }
+    button {
+      margin-left: 10px;
+      padding: 3px 8px;
+      cursor: pointer;
+    }
+
+
+    /*task 4 */
+
+       body { font-family: Arial; margin: 20px; }
+    h2 { color: #2c3e50; }
+    input { margin: 5px; padding: 5px; }
+    button { margin: 5px; padding: 5px 10px; cursor: pointer; }
+    .product { margin: 5px 0; }
+    .cart-item { margin: 5px 0; }
+    #total { font-weight: bold; margin-top: 10px; }
+
+
+    /*task 6*/
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f9f9f9;
+    }
+    h2 {
+      color: #333;
+    }
+    .student {
+      background: #fff;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .average {
+      margin-top: 15px;
+      font-weight: bold;
+      color: rgb(139, 0, 116);
+    }
+
+ 

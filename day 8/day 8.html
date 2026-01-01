@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 8</title>
+    <link rel="stylesheet" href="day 8.css">
+</head>
+<body>
+    <h1>task 1</h1>
+
+  <main class="card">
+    <h1 class="title">Username Generator</h1>
+    <p class="subtitle">Enter first and last name. We take 3 letters from each and add a random 3-digit number.</p>
+
+    <div class="row">
+      <label for="firstName">First name</label>
+      <input id="firstName" type="text" placeholder="e.g., Karthik" />
+    </div>
+
+    <div class="row">
+      <label for="lastName">Last name</label>
+      <input id="lastName" type="text" placeholder="e.g., Subramanian" />
+    </div>
+
+    <button class="btn" id="generateBtn" aria-label="Generate username">
+      Generate
+    </button>
+
+    <div id="result" class="result" aria-live="polite">Your username will appear here.</div>
+    <p class="note"></p>
+    </main>
+
+    <script>
+ function cleanName(raw) {
+      return raw
+        .trim()
+        // Keep letters from any language; remove digits/symbols/spaces
+        .replace(/[^\p{L}]/gu, "");
+    }
+  function firstThree(str) {
+      // Lowercase for a consistent username look
+      return str.toLowerCase().slice(0, 3);
+    }
+
+ function randomThreeDigits() {
+      return Math.floor(Math.random() * 900) + 100;
+    }
+
+    function generateUsername(first, last) {
+      const f = firstThree(cleanName(first));
+      const l = firstThree(cleanName(last));
+      const n = randomThreeDigits();
+
+      if (!f && !l) return "";
+
+      return f + l + n;
+    }
+
+    const firstInput = document.getElementById("firstName");
+    const lastInput  = document.getElementById("lastName");
+    const resultBox  = document.getElementById("result");
+    const btn        = document.getElementById("generateBtn");
+
+    btn.addEventListener("click", () => {
+      const username = generateUsername(firstInput.value, lastInput.value);
+
+      if (!username) {
+        resultBox.textContent = "Please enter at least one valid name.";
+        return;
+      }
+
+      resultBox.textContent = username;
+    });
+ [firstInput, lastInput].forEach(input => {
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") btn.click();
+      });
+    });
+
+    </script>
+<hr>
+
+<h1>task 2</h1>
+
+<div class="container">
+    <h2>Palindrome Checker</h2>
+    <input type="text" id="textInput" placeholder="Enter word or phrase">
+    <button onclick="checkPalindrome()">Check</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function checkPalindrome() {
+      let input = document.getElementById("textInput").value;
+
+      // Step 1: Remove spaces & special characters
+      let cleaned = input.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+
+      // Step 2: Reverse the string
+      let reversed = cleaned.split("").reverse().join("");
+
+      // Step 3: Compare
+      if (cleaned && cleaned === reversed) {
+        document.getElementById("result").innerHTML = `"${input}" is a Palindrome ✅`;
+      } else {
+        document.getElementById("result").innerHTML = `"${input}" is NOT a Palindrome ❌`;
+      }
+    }
+  </script>
+<hr>
+
+
+<h1>task 3</h1>
+
+  <div class="box">
+    <h1>Text Reverser </h1>
+
+    <div class="row">
+      <textarea id="input" rows="4" placeholder="Type text to reverse..."></textarea>
+      <div id="output" class="out" aria-live="polite">Reversed text will appear here.</div>
+
+      <div class="actions">
+        <button id="btnReverse">Reverse</button>
+        <button id="btnLive" class="secondary" aria-pressed="false">Live mode: Off</button>
+        <button id="btnCopy" class="secondary" disabled>Copy</button>
+      </div>
+
+      <div class="hint">
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+
+    const input = document.getElementById('input');
+    const output = document.getElementById('output');
+    const btnReverse = document.getElementById('btnReverse');
+    const btnLive = document.getElementById('btnLive');
+    const btnCopy = document.getElementById('btnCopy');
+
+   
+    function reverseText(str) {
+      return [...str].reverse().join('');
+    }
+
+    function render() {
+      const value = input.value;
+      const result = reverseText(value);
+      output.textContent = result || 'Reversed text will appear here.';
+      btnCopy.disabled = result.length === 0;
+
+    btnReverse.addEventListener('click', render);
+
+    // EN: Live mode toggles input listener. TA: லைவ் மோடு டாகில்
+    btnLive.addEventListener('click', () => {
+      const on = btnLive.getAttribute('aria-pressed') === 'true';
+      btnLive.setAttribute('aria-pressed', String(!on));
+      btnLive.textContent = `Live mode: ${on ? 'Off' : 'On'}`;
+      input.removeEventListener('input', render);
+      if (!on) input.addEventListener('input', render);
+    });
+
+   btnCopy.addEventListener('click', async () => {
+      const text = output.textContent.trim();
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        const prev = btnCopy.textContent;
+        btnCopy.textContent = 'Copied!';
+        setTimeout(() => (btnCopy.textContent = prev), 900);
+      } catch {
+        alert('Copy failed. Please select the text and copy manually.');
+      }
+    });
+    render();
+}
+  </script>
+
+<hr>
+
+<h1>task 4</h1>
+  <div class="container">
+    <h2>Word Counter</h2>
+    <textarea id="sentence" placeholder="Type your sentence here..."></textarea>
+    <button onclick="countWords()">Count Words</button>
+    <p id="result"></p>
+  </div>
+
+
+  <script>
+    function countWords() {
+      // Get user input
+      let sentence = document.getElementById("sentence").value.trim();
+
+      // Split by spaces, filter out empty strings
+      let words = sentence.split(" ").filter(word => word !== "");
+
+      // Count words
+      let count = words.length;
+
+      // Display result
+      document.getElementById("result").innerText = "Word Count: " + count;
+    }
+  </script>
+
+<hr>
+
+
+<h1>task 5 </h1>
+
+  <h2>Email Formatter & Validator</h2>
+  <input id="email" type="text" placeholder="Enter email">
+  <button onclick="checkEmail()">Validate</button>
+
+  <p id="result"></p>
+
+  <script>
+    function checkEmail() {
+      const email = document.getElementById("email").value.trim();
+      const result = document.getElementById("result");
+
+      // Simple regex
+      const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/;
+
+      if (!regex.test(email)) {
+        result.innerHTML = "<span class='bad'>Invalid email format ❌</span>";
+        return;
+      }
+      // Extract username & domain
+      const [username, domain] = email.split("@");
+      result.innerHTML =
+        "<span class='ok'>Valid email ✔</span><br>" +
+        "Username: <b>" + username + "</b><br>" +
+        "Domain: <b>" + domain + "</b>";
+    }
+  </script>
+<hr>
+
+
+
+<h1>task 6</h1>
+
+ <h2>Sentence Transformer</h2>
+  <p class="muted"></p>
+
+  <div class="row">
+    <textarea id="input" rows="3" placeholder="Type a sentence… e.g., hello world from Kovilpatti"></textarea>
+    <button id="goBtn" type="button">Transform</button>
+  </div>
+
+  <div id="results" class="box" aria-live="polite" aria-atomic="true">
+    <div class="grid">
+      <div><strong>Title case:</strong></div>     <div id="titleCase">—</div>
+      <div><strong>Total words:</strong></div>     <div id="wordCount">—</div>
+      <div><strong>Total characters:</strong></div><div id="charCount">—</div>
+      <div><strong>Kebab-case:</strong></div>      <div id="kebab">—</div>
+      <div><strong>Snake_case:</strong></div>      <div id="snake">—</div>
+      <div><strong>Longest word:</strong></div>    <div id="longest">—</div>
+      <div><strong>Shortest word:</strong></div>   <div id="shortest">—</div>
+    </div>
+
+    <div style="margin-top:10px">
+      <strong>Highlighted sentence:</strong>
+      <div id="highlighted" style="margin-top:6px">—</div>
+    </div>
+
+  <p class="muted" style="margin-top:10px">
+
+    </p>
+  </div>
+ <script>
+    const el = {
+      input: document.getElementById('input'),
+      go: document.getElementById('goBtn'),
+      titleCase: document.getElementById('titleCase'),
+      wordCount: document.getElementById('wordCount'),
+      charCount: document.getElementById('charCount'),
+      kebab: document.getElementById('kebab'),
+      snake: document.getElementById('snake'),
+      longest: document.getElementById('longest'),
+      shortest: document.getElementById('shortest'),
+      highlighted: document.getElementById('highlighted'),
+    };
+
+    function toWords(s) {
+      // Split by whitespace, keep basic letters/numbers, strip leading/trailing punctuation
+      return (s || '')
+        .trim()
+        .split(/\s+/)
+        .map(w => w.replace(/^[^\w]+|[^\w]+$/g, '')) // remove non-word at ends
+        .filter(Boolean);
+    }
+    function titleCase(s) {
+      return s
+        .toLowerCase()
+        .replace(/\b[a-z]/g, c => c.toUpperCase());
+    }
+
+    function toKebab(words) {
+      return words.map(w => w.toLowerCase()).join('-');
+    }
+
+    function toSnake(words) {
+      return words.map(w => w.toLowerCase()).join('_');
+    }
+    function longestShortest(words) {
+      if (words.length === 0) return { longest: '—', shortest: '—', lens: { max: 0, min: 0 } };
+      let longest = words[0], shortest = words[0];
+      for (const w of words) {
+        if (w.length > longest.length) longest = w;
+        if (w.length < shortest.length) shortest = w;
+      }
+      return { longest, shortest, lens: { max: longest.length, min: shortest.length } };
+    }
+
+    function highlightSentence(original, longest, shortest) {
+      if (!original) return '—';
+      // Wrap occurrences of longest and shortest (case-insensitive) with <mark>
+      let res = original;
+      if (longest && longest !== '—') {
+        const re = new RegExp(`\\b${escapeReg(longest)}\\b`, 'gi');
+        res = res.replace(re, m => `<mark>${m}</mark>`);
+      }
+      if (shortest && shortest !== '—' && shortest !== longest) {
+        const re2 = new RegExp(`\\b${escapeReg(shortest)}\\b`, 'gi');
+        res = res.replace(re2, m => `<mark>${m}</mark>`);
+      }
+      return res;
+    }
+
+    function escapeReg(s) {
+      return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function transform() {
+      const text = el.input.value || '';
+      const words = toWords(text);
+      const chars = text.length;
+      const { longest, shortest } = longestShortest(words);
+       
+      el.titleCase.textContent = titleCase(text);
+      el.wordCount.textContent = String(words.length);
+      el.charCount.textContent = String(chars);
+      el.kebab.textContent = words.length ? toKebab(words) : '—';
+      el.snake.textContent = words.length ? toSnake(words) : '—';
+      el.longest.textContent = longest;
+      el.shortest.textContent = shortest;
+      el.highlighted.innerHTML = highlightSentence(text, longest, shortest);
+    }
+ el.go.addEventListener('click', transform);
+    el.input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) transform(); });
+    el.input.addEventListener('input', transform); // live update
+    transform(); // initial render
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

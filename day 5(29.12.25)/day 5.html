@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="day 5.css">
+</head>
+<body>
+    
+<h1>task 1 </h1>
+
+  <div class="container">
+    <h2>Grade Calculator</h2>
+    <!-- User enters marks -->
+    <input type="number" id="subject1" placeholder="Enter marks for Subject 1">
+    <input type="number" id="subject2" placeholder="Enter marks for Subject 2">
+    <input type="number" id="subject3" placeholder="Enter marks for Subject 3">
+    <input type="number" id="subject4" placeholder="Enter marks for Subject 4">
+    
+    <button onclick="calculateGrade()">Calculate</button>
+    
+    <!-- Result display -->
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculateGrade() {
+      // Get values from inputs
+      let s1 = parseFloat(document.getElementById("subject1").value) || 0;
+      let s2 = parseFloat(document.getElementById("subject2").value) || 0;
+      let s3 = parseFloat(document.getElementById("subject3").value) || 0;
+      let s4 = parseFloat(document.getElementById("subject4").value) || 0;
+
+      // Total & Average
+      let total = s1 + s2 + s3 + s4;
+      let average = total / 4;
+    // Grade assignment
+      let grade = "";
+      if (average >= 90) {
+        grade = "A";
+      } else if (average >= 75) {
+        grade = "B";
+      } else if (average >= 50) {
+        grade = "C";
+      } else {
+        grade = "F";
+      }
+
+      // Display result
+      document.getElementById("result").innerHTML =
+        `Total Marks: ${total} <br> Average: ${average.toFixed(2)} <br> Grade: ${grade}`;
+    }
+  </script>
+
+<hr>
+
+<h1>task 2</h1>
+
+
+ <div class="container1">
+    <h2> Grocery List</h2>
+    <input type="text" id="itemInput" placeholder="Enter item">
+    <button class="add" onclick="addItem()">Add</button>
+    <br><br>
+    <input type="text" id="removeInput" placeholder="Item to remove">
+    <button class="remove-btn" onclick="removeItem()">Remove</button>
+    <ul id="groceryList"></ul>
+  </div>
+
+  <script>
+    // Array to store grocery items
+    let groceries = [];
+
+    // Function to add item
+    function addItem() {
+      const item = document.getElementById("itemInput").value.trim();
+      if(item) {
+        groceries.push(item);
+        document.getElementById("itemInput").value = "";
+        displayList();
+      }
+    }
+   // Function to remove item by name
+    function removeItem() {
+      const itemToRemove = document.getElementById("removeInput").value.trim();
+      groceries = groceries.filter(grocery => grocery.toLowerCase() !== itemToRemove.toLowerCase());
+      document.getElementById("removeInput").value = "";
+      displayList();
+    }
+
+    // Function to display grocery list
+    function displayList() {
+      const list = document.getElementById("groceryList");
+      list.innerHTML = "";
+      groceries.forEach(grocery => {
+        const li = document.createElement("li");
+        li.textContent = grocery;
+        list.appendChild(li);
+      });
+    }
+  </script>
+<hr>
+
+<h1>task 3</h1>
+
+  <div class="container2">
+    <h2> Tip Calculator</h2>
+    <input type="number" id="billAmount" placeholder="Enter bill amount">
+    <input type="number" id="tipPercent" placeholder="Enter tip %">
+    <button  class="calculate-btn" onclick="calculate()">Calculate</button>
+    <div class="result" id="output"></div>
+  </div>
+
+
+ <script>
+    // Function to calculate tip
+    function calculateTip(bill, tipPercent) {
+      return bill * (tipPercent / 100);
+    }
+
+    // Function to calculate total
+    function calculateTotal(bill, tip) {
+      return bill + tip;
+    }
+
+    // Main function to handle calculation
+    function calculate() {
+      const bill = parseFloat(document.getElementById("billAmount").value);
+      const tipPercent = parseFloat(document.getElementById("tipPercent").value);
+
+      if(isNaN(bill) || isNaN(tipPercent)) {
+        document.getElementById("output").innerHTML = "Please enter valid numbers.";
+        return;
+      }
+
+      const tip = calculateTip(bill, tipPercent);
+      const total = calculateTotal(bill, tip);
+
+      document.getElementById("output").innerHTML = 
+        `Tip Amount: ₹${tip.toFixed(2)} <br> Total Amount: ₹${total.toFixed(2)}`;
+    }
+  </script>
+<hr>
+
+<h1>task 4</h1>
+
+  <div class="container3">
+    <h2>📝 Console To-Do List</h2>
+    <p>Open your browser console (F12 → Console) to use functions:</p>
+    <p><b>addTask("task")</b> | <b>viewTasks()</b> | <b>deleteTask(index)</b></p>
+  </div>
+
+  <script>
+    // Array to store tasks
+    let tasks = [];
+
+    // Function to add a task
+    function addTask(taskName) {
+      tasks.push(taskName);
+      console.log(`✅ Task added: "${taskName}"`);
+    }
+
+    // Function to view all tasks
+    function viewTasks() {
+      if (tasks.length === 0) {
+        console.log("📂 No tasks available.");
+      } else {
+        console.log("📋 Current Tasks:");
+        tasks.forEach((task, index) => {
+          console.log(`${index} : ${task}`);
+        });
+      }
+    }
+
+
+    // Function to delete a task by index
+    function deleteTask(index) {
+      if (index >= 0 && index < tasks.length) {
+        console.log(` Task removed: "${tasks[index]}"`);
+        tasks.splice(index, 1);
+      } else {
+        console.log("Invalid index. Use viewTasks() to check task numbers.");
+      }
+    }
+
+    // Initial message
+ console.log("Console To-Do List Ready!");
+  console.log("Use addTask('task'), viewTasks(), deleteTask(index)");
+  </script>
+<hr>
+
+<h1>task 5 </h1>
+ 
+
+  <h2>Bill Splitting Calculator</h2>
+
+  <label>Total Bill Amount (₹):</label>
+  <input type="number" id="total" placeholder="e.g. 1000">
+
+  <label>Number of People:</label>
+  <input type="number" id="people" placeholder="e.g. 4">
+
+  <button onclick="splitBill()">Calculate</button>
+
+  <div id="result">Per Person: ₹0.00</div>
+
+  <script>
+    function splitBill() {
+      const total = parseFloat(document.getElementById('total').value);
+      const people = parseInt(document.getElementById('people').value);
+
+      if (isNaN(total) || isNaN(people) || people <= 0) {
+        document.getElementById('result').textContent = "Please enter valid numbers.";
+        return;
+      }
+
+      const perPerson = total / people;
+      document.getElementById('result').textContent = "Per Person: ₹" + perPerson.toFixed(2);
+    }
+  </script>
+<hr>
+
+<h1>task 6 </h1>
+
+  <div class="cart">
+    <h2>Shopping Cart</h2>
+    
+    <div class="item">
+      <span>Apple (₹30)</span>
+      <button onclick="addToCart(30)">Add</button>
+    </div>
+    
+    <div class="item">
+      <span>Banana (₹10)</span>
+      <button onclick="addToCart(10)">Add</button>
+    </div>
+    
+    <div class="item">
+      <span>Orange (₹20)</span>
+      <button onclick="addToCart(20)">Add</button>
+    </div>
+    
+    <div class="total">
+      Total: ₹<span id="total">0</span>
+    </div>
+  </div>
+  <script>
+    let total = 0;
+
+    function addToCart(price) {
+      total += price;
+      document.getElementById("total").textContent = total;
+    }
+  </script>
+
+
+
+
+
+
+</body>
+</html>
