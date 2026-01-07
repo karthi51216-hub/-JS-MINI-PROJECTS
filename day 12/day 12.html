@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 12 </title>
+    <link rel="stylesheet" href="day 12.css">
+</head>
+<body>
+    <h1>task 1</h1>
+
+     <div class="container">
+    <h2>Inventory Management System</h2>
+
+    <!-- Check Stock -->
+    <h3>Check Stock</h3>
+    <input type="text" id="searchKey" placeholder="Enter Product ID or Name">
+    <button onclick="checkStock()">Check</button>
+
+    <!-- Update Stock -->
+    <h3>Update Stock</h3>
+    <input type="number" id="updateId" placeholder="Product ID">
+    <input type="number" id="updateQty" placeholder="Quantity (+/-)">
+    <button onclick="updateStock()">Update</button>
+
+    <!-- Total Value -->
+    <h3>Total Inventory Value</h3>
+    <button onclick="showTotalValue()">Calculate</button>
+
+    <!-- Output -->
+ <div class="output" id="output"></div>
+  </div>
+
+  <script>
+    // Initial Inventory
+    let inventory = [
+      { id: 101, name: "Laptop", category: "Electronics", quantity: 10, price: 50000 },
+      { id: 102, name: "Chair", category: "Furniture", quantity: 25, price: 1500 },
+      { id: 103, name: "Pen", category: "Stationery", quantity: 100, price: 10 }
+    ];
+
+    // Check Stock
+    function checkStock() {
+      let key = document.getElementById("searchKey").value.trim();
+      let product = inventory.find(p => p.id == key || p.name.toLowerCase() === key.toLowerCase());
+      document.getElementById("output").innerText = product
+        ? `${product.name} → ${product.quantity} units available`
+        : "Product not found!";
+    }
+    // Update Stock
+   function updateStock() {
+      let id = parseInt(document.getElementById("updateId").value);
+      let qty = parseInt(document.getElementById("updateQty").value);
+      let product = inventory.find(p => p.id === id);
+
+      if (product) {
+        product.quantity += qty;
+        if (product.quantity < 0) product.quantity = 0;
+        document.getElementById("output").innerText =
+          `${product.name} updated → Current stock: ${product.quantity}`;
+      } else {
+        document.getElementById("output").innerText = "Product not found!";
+      }
+    }
+
+    // Total Inventory Value
+    function showTotalValue() {
+      let total = inventory.reduce((sum, p) => sum + (p.quantity * p.price), 0);
+      document.getElementById("output").innerText = "Total Inventory Value: ₹" + total;
+    }
+  </script>
+<hr>
+<h1>task 2</h1>
+
+  <div class="container1">
+    <h1 class="book"> Library Book Management</h1>
+
+    <!-- Search Section -->
+    <input type="text" id="searchInput" placeholder="Search by title, author, or genre">
+    <button class="library" onclick="searchBooks()">Search</button>
+    <button class="library" onclick="listAvailableBooks()">Show Available Books</button>
+    <button class="library" onclick="displayBooks(books)">Show All Books</button>
+
+    <!-- Book Table -->
+    <table id="bookTable">
+      <thead>
+        <tr>
+          <th>ID</th><th>Title</th><th>Author</th><th>Genre</th><th>Status</th><th>Borrower</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+ <script>
+    // 1. Store Book Records
+    let books = [
+      {id: 1, title: "The Alchemist", author: "Paulo Coelho", genre: "Fiction", available: true, borrower: ""},
+      {id: 2, title: "Clean Code", author: "Robert C. Martin", genre: "Programming", available: true, borrower: ""},
+      {id: 3, title: "Harry Potter", author: "J.K. Rowling", genre: "Fantasy", available: false, borrower: "Karthi"}
+    ];
+
+    // Display Books
+    function displayBooks(bookList) {
+      const tbody = document.querySelector("#bookTable tbody");
+      tbody.innerHTML = "";
+      bookList.forEach(book => {
+        let row = `<tr>
+          <td>${book.id}</td>
+          <td>${book.title}</td>
+          <td>${book.author}</td>
+          <td>${book.genre}</td>
+          <td class="${book.available ? 'available':'borrowed'}">
+            ${book.available ? 'Available' : 'Borrowed'}
+            </td>
+             <td>${book.borrower || '-'}</td>
+          <td>
+            ${book.available 
+              ? `<button onclick="borrowBook(${book.id})">Borrow</button>` 
+              : `<button onclick="returnBook(${book.id})">Return</button>`}
+          </td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
+    // 2. Search Books
+    function searchBooks() {
+      const query = document.getElementById("searchInput").value.toLowerCase();
+      const results = books.filter(book =>
+        book.title.toLowerCase().includes(query) ||
+        book.author.toLowerCase().includes(query) ||
+        book.genre.toLowerCase().includes(query)
+      );
+      displayBooks(results);
+    }
+    // 3. Track Borrowed Books
+    function borrowBook(id) {
+      const borrowerName = prompt("Enter borrower name:");
+      if(borrowerName) {
+        const book = books.find(b => b.id === id);
+        book.available = false;
+        book.borrower = borrowerName;
+        displayBooks(books);
+      }
+    }
+
+    function returnBook(id) {
+      const book = books.find(b => b.id === id);
+      book.available = true;
+      book.borrower = "";
+      displayBooks(books);
+    }
+
+    // 4. List Available Books
+    function listAvailableBooks() {
+      const availableBooks = books.filter(book => book.available);
+      displayBooks(availableBooks);
+    }
+
+    // Initial Display
+    displayBooks(books);
+  </script>
+
+<hr>
+
+<h1>task 3</h1>
+
+  <div class="marks-app" id="marksApp">
+    <h1>Student Marks Database</h1>
+
+    <!-- Entry form  -->
+    <div class="card">
+      <form id="studentForm">
+        <div class="row">
+          <div>
+            <label for="name">Student name </label>
+            <input type="text" id="name" placeholder="e.g., Karthi" />
+          </div>
+          <div>
+            <label for="sub1">English </label>
+            <input type="number" id="sub1" min="0" max="100" placeholder="0-100" />
+          </div>
+          <div>
+            <label for="sub2">Maths </label>
+            <input type="number" id="sub2" min="0" max="100" placeholder="0-100" />
+          </div>
+          <div>
+            <label for="sub3">Science </label>
+            <input type="number" id="sub3" min="0" max="100" placeholder="0-100" />
+          </div>
+          <div>
+               <label for="sub4">Social </label>
+            <input type="number" id="sub4" min="0" max="100" placeholder="0-100" />
+          </div>
+          <div>
+            <button type="submit" id="addBtn">Add student</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Table -->
+    <div class="card">
+      <table id="studentsTable" aria-label="Students and marks">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>English</th>
+            <th>Maths</th>
+            <th>Science</th>
+            <th>Social</th>
+            <th>Average</th>
+          </tr>
+        </thead>
+  <tbody id="studentsBody">
+          <!-- rows injected by JS -->
+        </tbody>
+      </table>
+      <div class="empty" id="emptyState" hidden>No records yet. Add a student to get started.</div>
+
+      <div class="summary" id="summaryBar">
+        <span class="chip" id="countChip">Students: 0</span>
+        <span class="chip" id="classAvgChip">Class average: 0</span>
+        <span class="chip" id="topperChip">Topper: —</span>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Simple JS classes (தமிழ்: எளிய JS வகுப்பு)
+    class Student {
+      constructor(name, marks) {
+        this.name = name.trim();
+        // marks = { english: number, maths: number, science: number, social: number }
+        this.marks = marks;
+      }
+      average() {
+        // Calculate per-student average (தமிழ்: மாணவர் சராசரி)
+        const values = Object.values(this.marks);
+        const sum = values.reduce((a, b) => a + b, 0);
+        const avg = values.length ? sum / values.length : 0;
+        return Number(avg.toFixed(2));
+      }
+    }
+
+    class StudentStore {
+      constructor() {
+        this.list = [];
+      }
+      add(student) {
+        this.list.push(student);
+      }
+      count() {
+        return this.list.length;
+      }
+      classAverage() {
+        if (this.list.length === 0) return 0;
+        const sum = this.list.reduce((acc, s) => acc + s.average(), 0);
+        return Number((sum / this.list.length).toFixed(2));
+      }
+      topper() {
+        if (this.list.length === 0) return null;
+        // Highest average student
+        return this.list.slice().sort((a, b) => b.average() - a.average())[0];
+      }
+    }
+ // App state & DOM refs 
+    const store = new StudentStore();
+    const form = document.getElementById('studentForm');
+    const nameInput = document.getElementById('name');
+    const sub1 = document.getElementById('sub1');
+    const sub2 = document.getElementById('sub2');
+    const sub3 = document.getElementById('sub3');
+    const sub4 = document.getElementById('sub4');
+    const ttbody = document.getElementById('studentsBody');
+    const emptyState = document.getElementById('emptyState');
+    const countChip = document.getElementById('countChip');
+    const classAvgChip = document.getElementById('classAvgChip');
+    const topperChip = document.getElementById('topperChip');
+
+    // Render helpers 
+    function renderTable() {
+      tbody.innerHTML = '';
+      if (store.count() === 0) {
+        emptyState.hidden = false;
+        return;
+      }
+
+    emptyState.hidden = true;
+      for (const s of store.list) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${escapeHTML(s.name)}</td>
+          <td>${s.marks.english}</td>
+          <td>${s.marks.maths}</td>
+          <td>${s.marks.science}</td>
+          <td>${s.marks.social}</td>
+          <td><strong>${s.average()}</strong></td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    function renderSummary() {
+      countChip.textContent = `Students: ${store.count()}`;
+      classAvgChip.textContent = `Class average: ${store.classAverage()}`;
+      const top = store.topper();
+      topperChip.textContent = top
+        ? `Topper: ${top.name} (${top.average()})`
+        : 'Topper: —';
+    }
+  // Security: Basic HTML escaping for names
+    function escapeHTML(str) {
+      return str.replace(/[&<>"']/g, (m) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[m]);
+    }
+
+    // Form submit 
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = nameInput.value.trim();
+      const english = Number(sub1.value);
+      const maths = Number(sub2.value);
+      const science = Number(sub3.value);
+      const social = Number(sub4.value);
+
+      // Validation 
+      if (!name) {
+        alert('Please enter a student name.');
+        return;
+      }
+   const marksArr = [english, maths, science, social];
+      const invalid = marksArr.some(m => Number.isNaN(m) || m < 0 || m > 100);
+      if (invalid) {
+        alert('Enter valid marks (0–100) for all subjects.');
+        return;
+      }
+
+      const student = new Student(name, { english, maths, science, social });
+      store.add(student);
+
+      // Reset form & re-render 
+      form.reset();
+      renderTable();
+      renderSummary();
+      nameInput.focus();
+    });
+   // Seed data
+    [
+      new Student('Asha', { english: 78, maths: 88, science: 92, social: 81 }),
+      new Student('Ravi', { english: 84, maths: 73, science: 69, social: 75 }),
+      new Student('Karthi', { english: 90, maths: 95, science: 89, social: 93 }),
+    ].forEach(s => store.add(s));
+
+    // Initial render
+    renderTable();
+    renderSummary();
+  </script>
+<hr>
+
+<h1>task 4</h1>
+
+ <div class="container2">
+    <h2>Customer Orders Management</h2>
+
+    <!-- Search Section -->
+    <div class="section search-section">
+      <h3>Retrieve Specific Order</h3>
+      <input type="text" class="search-input" placeholder="Enter Order ID or Customer Name">
+      <button class="btn search-btn">Search</button>
+      <div class="output search-output"></div>
+    </div>
+
+    <!-- Revenue Section -->
+    <div class="section revenue-section">
+      <h3>Total Revenue</h3>
+      <button class="btn revenue-btn">Calculate Revenue</button>
+      <div class="output revenue-output"></div>
+    </div>
+
+       <!-- Filter Section -->
+    <div class="section filter-section">
+      <h3>Filter Orders by Customer</h3>
+      <input type="text" class="filter-input" placeholder="Enter Customer Name">
+      <button class="btn filter-btn">Filter</button>
+      <div class="output filter-output"></div>
+    </div>
+  </div>
+
+  <script>
+    // 1. Store Order Details
+    class Order {
+      constructor(orderId, customerName, items, totalAmount) {
+        this.orderId = orderId;
+        this.customerName = customerName;
+        this.items = items;
+        this.totalAmount = totalAmount;
+      }
+    }
+
+    const orders = [
+      new Order(101, "Karthi", ["Pizza", "Coke"], 500),
+      new Order(102, "Anitha", ["Burger", "Fries"], 300),
+      new Order(103, "Karthi", ["Pasta"], 250),
+      new Order(104, "Ravi", ["Sandwich", "Juice"], 200)
+    ];
+        // 2. Retrieve Specific Order
+    document.querySelector(".search-btn").addEventListener("click", () => {
+      const query = document.querySelector(".search-input").value.trim().toLowerCase();
+      const result = orders.find(order =>
+        order.orderId.toString() === query || order.customerName.toLowerCase() === query
+      );
+      document.querySelector(".search-output").innerHTML = result
+        ? `Order ID: ${result.orderId}<br>Customer: ${result.customerName}<br>Items: ${result.items.join(", ")}<br>Total: ₹${result.totalAmount}`
+        : "No order found!";
+    });
+
+    // 3. Calculate Total Revenue
+    document.querySelector(".revenue-btn").addEventListener("click", () => {
+      const totalRevenue = orders.reduce((sum, order) => sum + order.totalAmount, 0);
+      document.querySelector(".revenue-output").innerHTML = `Total Revenue: ₹${totalRevenue}`;
+    });
+
+    // 4. Filter Orders by Customer
+    document.querySelector(".filter-btn").addEventListener("click", () => {
+      const customer = document.querySelector(".filter-input").value.trim().toLowerCase();
+      const customerOrders = orders.filter(order => order.customerName.toLowerCase() === customer);
+      document.querySelector(".filter-output").innerHTML = customerOrders.length
+        ? customerOrders.map(o => `Order ID: ${o.orderId}, Items: ${o.items.join(", ")}, Total: ₹${o.totalAmount}`).join("<br>")
+        : "No orders found for this customer!";
+    });
+  </script>
+<hr>
+
+
+<h1>task 5</h1>
+
+  <h1>Student Performance Dashboard</h1>
+  <div class="dashboard">
+    <table id="studentTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Roll No</th>
+          <th>Math</th>
+          <th>Science</th>
+          <th>English</th>
+          <th>Total</th>
+          <th>Average</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    // Student data
+    class Student {
+      constructor(name, roll, marks) {
+        this.name = name;
+        this.roll = roll;
+        this.marks = marks; // {math: , science: , english: }
+        this.total = this.calculateTotal();
+        this.average = this.calculateAverage();
+        this.status = this.getStatus();
+      }
+
+      calculateTotal() {
+        return this.marks.math + this.marks.science + this.marks.english;
+      }
+
+      calculateAverage() {
+        return (this.total / 3).toFixed(2);
+      }
+ getStatus() {
+        return this.average >= 40 ? "Pass" : "Fail";
+      }
+    }
+
+    // Sample students
+    let students = [
+      new Student("Arun", "101", {math: 80, science: 75, english: 90}),
+      new Student("Bala", "102", {math: 35, science: 40, english: 30}),
+      new Student("Chitra", "103", {math: 95, science: 92, english: 88}),
+      new Student("Deepa", "104", {math: 50, science: 60, english: 55}),
+    ];
+
+    // Sort by performance (highest average first)
+    students.sort((a, b) => b.average - a.average);
+
+    // Display in table
+    const tbody = document.querySelector("#studentTable tbody");
+    students.forEach(stu => {
+      const row = document.createElement("tr");
+
+  row.innerHTML = `
+        <td>${stu.name}</td>
+        <td>${stu.roll}</td>
+        <td>${stu.marks.math}</td>
+        <td>${stu.marks.science}</td>
+        <td>${stu.marks.english}</td>
+        <td>${stu.total}</td>
+        <td>${stu.average}</td>
+        <td>${stu.status}</td>
+      `;
+
+      // Highlight pass/fail
+      if (stu.status === "Pass") {
+        row.classList.add("pass");
+      } else {
+        row.classList.add("fail");
+      }
+      // Distinction for top performers (avg >= 85)
+      if (stu.average >= 85) {
+        row.classList.add("distinction");
+      }
+
+      tbody.appendChild(row);
+    });
+  </script>
+<hr>
+
+<h1>task 6 </h1>
+
+  <h2> Online Order Fulfillment System</h2>
+
+  <div class="order-container" id="orderContainer"></div>
+
+  <button class="btn btn-pending" onclick="showPendingOrders()">Show Pending Orders</button>
+  <button class="btn btn-summary" onclick="showSummary()">Show Customer Summary</button>
+  <h3>Total Revenue: ₹<span id="revenue">0</span></h3>
+
+  <div class="summary-container" id="summaryContainer"></div>
+
+  <script>
+    // ✅ Sample Orders
+    class Order {
+      constructor(id, customer, items, quantity, price, status="pending") {
+        this.id = id;
+        this.customer = customer;
+        this.items = items;
+        this.quantity = quantity;
+        this.price = price;
+        this.status = status;
+      }
+    }
+  let orderss = [
+      new Order(1, "Arun", "Laptop", 1, 50000),
+      new Order(2, "Meena", "Phone", 2, 15000),
+      new Order(3, "Karthi", "Headphones", 3, 2000),
+      new Order(4, "Arun", "Mouse", 2, 500)
+    ];
+
+    // ✅ Display Orders
+    function displayOrders(list=orderss) {
+      const container = document.getElementById("orderContainer");
+      container.innerHTML = "";
+      list.forEach(order     => {
+        container.innerHTML += `
+          <div class="order">
+            <b>Order ID:</b> ${order.id} | 
+            <b>Customer:</b> ${order.customer} | 
+            <b>Item:</b> ${order.items} | 
+            <b>Qty:</b> ${order.quantity} | 
+            <b>Status:</b> ${order.status}
+            ${order.status === "pending" ? 
+              `<button class="btn btn-fulfill" onclick="fulfillOrder(${order.id})">Fulfill</button>` 
+              : ""}
+          </div>
+        `;
+      });
+
+  }
+
+    // ✅ Fulfill Order
+    function fulfillOrder(id) {
+      const order = orderss.find(o => o.id === id);
+      if(order) {
+        order.status = "fulfilled";
+        updateRevenue();
+        displayOrders();
+      }
+    }
+
+    // ✅ Show Pending Orders
+    function showPendingOrders() {
+      const pending = orders.filter(o => o.status === "pending");
+      displayOrders(pending);
+    }
+   // ✅ Calculate Revenue
+    function updateRevenue() {
+      let revenue = 0;
+      orderss.forEach(o => {
+        if(o.status === "fulfilled") {
+          revenue += o.price * o.quantity;
+        }
+      });
+      document.getElementById("revenue").innerText = revenue;
+    }
+
+    // ✅ Customer-wise Summary
+    function showSummary() {
+      const summary = {};
+      orderss.forEach(o => {
+        if(!summary[o.customer]) summary[o.customer] = {count:0, spent:0};
+        summary[o.customer].count += o.quantity;
+        if(o.status === "fulfilled") {
+          summary[o.customer].spent += o.price * o.quantity;
+        }
+      });
+
+   const container = document.getElementById("summaryContainer");
+      container.innerHTML = "<h3>Customer Summary</h3>";
+      for(const customer in summary) {
+        container.innerHTML += `
+          <p><b>${customer}</b> → Items: ${summary[customer].count}, Spent: ₹${summary[customer].spent}</p>
+        `;
+      }
+    }
+
+    // Initial Display
+    displayOrders();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

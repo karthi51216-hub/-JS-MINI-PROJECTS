@@ -1,0 +1,215 @@
+/*task 1*/
+ body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    h1 {
+      color: #333;
+    }
+    #counter {
+      font-size: 2em;
+      margin: 20px;
+      color: #007bff;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 1em;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+   #clickBtn {
+      background-color: #28a745;
+      color: white;
+    }
+    #resetBtn {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    /*task 2*/
+
+       h1 {
+      color: #333;
+    }
+    #preview {
+      margin-top: 20px;
+    }
+    #preview img {
+      max-width: 300px;   /* Preview size */
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      padding: 5px;
+    }
+
+    /*task 3*/
+
+      #message {
+      margin-top: 20px;
+      padding: 10px;
+      border: 2px solid #333;
+      display: inline-block;
+      min-width: 200px;
+      font-weight: bold;
+      color: #2c3e50;
+      background: #ecf0f1;
+    }
+
+    /*task 4*/
+
+    #quiz-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      width: 350px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    h2 { margin-bottom: 15px; }
+    .option {
+      display: block;
+      margin: 8px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .option.correct { background: #c8e6c9; }   /* green */
+    .option.wrong { background: #ffcdd2; }     /* red */
+    #score {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+ #next-btn {
+      margin-top: 15px;
+      padding: 10px;
+      background: #2196f3;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: none;
+    }
+
+    /*task 5*/
+
+/* Designated area (boundary) */
+    .drop-area {
+      position: relative;
+      width: 420px;
+      height: 260px;
+      background: #fff;
+      border: 2px dashed #8aa0c6;
+      border-radius: 10px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      padding: 10px;
+    }
+
+    .title {
+      font-size: 14px;
+      color: #445;
+      margin-bottom: 8px;
+    }
+
+    /* Draggable box */
+    .draggable {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: #4f80ff;
+      border-radius: 8px;
+color: #fff;
+      display: grid;
+      place-items: center;
+      user-select: none; /* text won't select while dragging */
+      cursor: grab;
+      left: 20px;  /* initial position */
+      top: 40px;
+      box-shadow: 0 4px 12px rgba(79,128,255,0.35);
+      transition: box-shadow 120ms ease, transform 120ms ease;
+    }
+
+    .draggable:active {
+      cursor: grabbing;
+      transform: scale(1.03);
+      box-shadow: 0 6px 16px rgba(79,128,255,0.5);
+    }
+
+    /* Helper badge for position */
+    .pos {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      font-size: 12px;
+      color: #667;
+      background: #eef3ff;
+  padding: 6px 8px;
+      border-radius: 6px;
+    }
+
+/*task 6*/
+
+.box { background:#fff; border:1px solid #ddd; border-radius:8px; padding:1rem; max-width:600px; }
+    label { font-weight:600; display:block; margin-bottom:.5rem; }
+    input[type="text"] {
+      width:100%; padding:.75rem; font-size:1rem;
+      border:1px solid #ccc; border-radius:6px;
+    }
+    .stats { display:flex; gap:1rem; margin-top:1rem; flex-wrap:wrap; }
+    .card { flex:1; min-width:220px; background:#fafafa; border:1px dashed #ccc; border-radius:6px; padding:.75rem; }
+    .last-key { font-size:1.25rem; font-weight:700; color:#2b6cb0; }
+    ul { margin:.5rem 0 0; padding-left:1rem; }
+    li { margin:.25rem 0; }
+    .muted { color:#666; font-size:.9rem; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

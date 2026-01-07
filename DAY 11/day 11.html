@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 11</title>
+    <link rel="stylesheet" href="day 11.css">
+</head>
+<body>
+    <h1>task 1</h1>
+
+  <div class="wrap">
+    <p class="title">Stopwatch — persists with sessionStorage</p>
+    <div id="display" class="time">00:00.00</div>
+
+    <div class="row">
+      <button id="btnStart" class="start">Start</button>
+      <button id="btnStop"  class="stop">Stop</button>
+      <button id="btnReset" class="reset">Reset</button>
+    </div>
+
+    <p class="hint">Refresh the page — timer keeps running if it was started.</p>
+  </div>
+<script>
+ // Keys in sessionStorage:
+    // running: "true" / "false"
+    // startTime: timestamp (Date.now())
+    // elapsed: milliseconds 
+
+    const KEY_RUNNING   = 'running';
+    const KEY_STARTTIME = 'startTime';
+    const KEY_ELAPSED   = 'elapsed';
+
+    const display = document.getElementById('display');
+    const btnStart = document.getElementById('btnStart');
+    const btnStop  = document.getElementById('btnStop');
+    const btnReset = document.getElementById('btnReset');
+
+    let tick = null; // setInterval reference
+
+    // Utility: pad numbers to 2 digits 
+    const pad2 = (n) => String(n).padStart(2, '0');
+ // Format ms => MM:SS.CS (centiseconds) — readable and simple
+    function formatTime(ms) {
+      const totalSeconds = Math.floor(ms / 1000);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      const centiseconds = Math.floor((ms % 1000) / 10);
+      return `${pad2(minutes)}:${pad2(seconds)}.${pad2(centiseconds)}`;
+    }
+
+    // Read helpers (sessionStorage வாசிக்க):
+    function getRunning()    { return sessionStorage.getItem(KEY_RUNNING) === 'true'; }
+    function getStartTime()  { return Number(sessionStorage.getItem(KEY_STARTTIME)) || 0; }
+    function getElapsed()    { return Number(sessionStorage.getItem(KEY_ELAPSED)) || 0; }
+
+    // Write helpers (sessionStorage எழுத):
+    function setRunning(v)   { sessionStorage.setItem(KEY_RUNNING, v ? 'true' : 'false'); }
+    function setStartTime(t) { sessionStorage.setItem(KEY_STARTTIME, String(t)); }
+    function setElapsed(ms)  { sessionStorage.setItem(KEY_ELAPSED, String(ms)); }
+
+ // Update the display based on current state
+    function render() {
+      const running = getRunning();
+      const baseElapsed = getElapsed();
+      const start = getStartTime();
+
+      const nowElapsed = running ? (Date.now() - start + baseElapsed) : baseElapsed;
+      display.textContent = formatTime(Math.max(0, nowElapsed));
+    }
+
+    // Start ticking (setInterval) when running
+    function startTicker() {
+      if (tick) return; // avoid duplicate intervals
+      tick = setInterval(render, 50); // 20 FPS — smooth enough, low CPU
+    }
+   function stopTicker() {
+      if (tick) {
+        clearInterval(tick);
+        tick = null;
+      }
+    }
+
+    // Actions
+    function onStart() {
+      if (getRunning()) return; // already running
+      setRunning(true);
+      setStartTime(Date.now());
+      // Keep previous elapsed (resume behavior)
+      startTicker();
+      render();
+    }
+
+    function onStop() {
+      if (!getRunning()) return;
+      // Compute and store final elapsed up to now
+      const total = Date.now() - getStartTime() + getElapsed();
+      setElapsed(total);
+      setRunning(false);
+      stopTicker();
+      render();
+    }
+ function onReset() {
+      // Reset to zero (முழுக்க ரீசெட்)
+      setRunning(false);
+      setElapsed(0);
+      setStartTime(0);
+      stopTicker();
+      render();
+    }
+
+    // Button bindings
+    btnStart.addEventListener('click', onStart);
+    btnStop .addEventListener('click', onStop);
+    btnReset.addEventListener('click', onReset);
+
+    // Initialize from sessionStorage (refresh-safe)
+    // Page load: if running, continue live; else show saved elapsed.
+    (function init() {
+      // Default values on first load
+      if (sessionStorage.getItem(KEY_RUNNING) === null) setRunning(false);
+      if (sessionStorage.getItem(KEY_ELAPSED) === null) setElapsed(0);
+      if (sessionStorage.getItem(KEY_STARTTIME) === null) setStartTime(0);
+
+      if (getRunning()) {
+        // Continue ticking visually after refresh
+        startTicker();
+      } else {
+        stopTicker();
+      }
+      render();
+    })();
+  </script>
+<hr>
+
+<h1>task 2</h1>
+ <div class="container">
+    <h2>📝 Notes App</h2>
+    <textarea id="noteInput" placeholder="Write your note here..."></textarea>
+    <button class="add-btn" onclick="addNote()">Add Note</button>
+    <ul id="notesList"></ul>
+  </div>
+
+  <script>
+    // Load notes from LocalStorage when page loads
+    document.addEventListener("DOMContentLoaded", loadNotes);
+
+    function addNote() {
+      const noteInput = document.getElementById("noteInput");
+      const noteText = noteInput.value.trim();
+
+      if (noteText === "") return; // ignore empty notes
+
+      // Get existing notes from LocalStorage
+      let notes = JSON.parse(localStorage.getItem("notes")) || [];
+ // Add new note
+      notes.push(noteText);
+
+      // Save back to LocalStorage
+      localStorage.setItem("notes", JSON.stringify(notes));
+
+      // Refresh list
+      displayNotes();
+
+      // Clear input
+      noteInput.value = "";
+    }
+
+    function deleteNote(index) {
+      let notes = JSON.parse(localStorage.getItem("notes")) || [];
+      notes.splice(index, 1); // remove note at index
+      localStorage.setItem("notes", JSON.stringify(notes));
+      displayNotes();
+    }
+   function loadNotes() {
+      displayNotes();
+    }
+
+    function displayNotes() {
+      const notesList = document.getElementById("notesList");
+      notesList.innerHTML = "";
+
+      let notes = JSON.parse(localStorage.getItem("notes")) || [];
+
+      notes.forEach((note, index) => {
+        const li = document.createElement("li");
+        li.textContent = note;
+
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "Delete";
+        delBtn.className = "delete-btn";
+        delBtn.onclick = () => deleteNote(index);
+
+        li.appendChild(delBtn);
+        notesList.appendChild(li);
+      });
+    }
+  </script>
+<hr>
+
+<h1>task 3</h1>
+ <div id="todo-container">
+    <h2>📋 To-Do List</h2>
+    <input type="text" id="taskInput" placeholder="Enter a task...">
+    <button class="addtask" onclick="addTask()">Add Task</button>
+    <ul id="taskList"></ul>
+  </div>
+<script>
+
+// (Persistant Storage)
+// Tasks array JSON.stringify() மூலம் string-ஆ save பண்ணுறோம்
+// JSON.parse() மூலம் மீண்டும் array-ஆ convert பண்ணுறோம்
+
+let tasks = JSON.parse(localStorage.getItem("tasks")) || []; 
+// Load tasks from localStorage (அல்லது empty array)
+
+function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function renderTasks() {
+  const taskList = document.getElementById("taskList");
+  taskList.innerHTML = "";
+  tasks.forEach((task, index) => {
+    const li = document.createElement("li");
+    li.textContent = task.text;
+    if (task.completed) li.classList.add("completed");
+
+    // Toggle complete
+    li.addEventListener("click", () => {
+      tasks[index].completed = !tasks[index].completed;
+      saveTasks();
+      renderTasks();
+    });
+
+    // Delete button
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "Delete";
+    delBtn.className = "delete-btn";
+    delBtn.addEventListener("click", (e) => {
+      e.stopPropagation(); // prevent toggle
+      tasks.splice(index, 1);
+      saveTasks();
+      renderTasks();
+    });
+
+    li.appendChild(delBtn);
+    taskList.appendChild(li);
+  });
+}
+
+function addTask() {
+  const input = document.getElementById("taskInput");
+  const text = input.value.trim();
+  if (text !== "") {
+    tasks.push({ text: text, completed: false });
+    saveTasks();
+    renderTasks();
+    input.value = "";
+  }
+}
+
+// Initial render
+renderTasks();
+</script>
+<hr>
+
+<h1>task 4 </h1>
+
+ <div class="survey-page">
+  <div class="survey-container">
+    <h2>Survey Form</h2>
+    <form id="surveyForm">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name">
+
+      <label for="age">Age:</label>
+      <input type="number" id="age" name="age">
+
+      <label for="rating">Rating:</label>
+      <select id="rating" name="rating">
+        <option value="">Select</option>
+        <option value="1">1 - Poor</option>
+        <option value="2">2</option>
+        <option value="3">3 - Average</option>
+        <option value="4">4</option>
+        <option value="5">5 - Excellent</option>
+      </select>
+
+      <label for="comments">Comments:</label>
+      <textarea id="comments" name="comments"></textarea>
+
+      <button class="submit">Save</button>
+    </form>
+ </div>
+<script>
+    const form = document.getElementById('surveyForm');
+
+    // Load saved data on page load
+    window.onload = () => {
+      const savedData = JSON.parse(localStorage.getItem('surveyData'));
+      if (savedData) {
+        document.getElementById('name').value = savedData.name || '';
+        document.getElementById('age').value = savedData.age || '';
+        document.getElementById('rating').value = savedData.rating || '';
+        document.getElementById('comments').value = savedData.comments || '';
+      }
+    };
+
+    // Save data on form submit
+    form.addEventListener('submit', (e) => {
+      e.preventDefault(); // prevent page reload
+      const surveyData = {
+        name: document.getElementById('name').value,
+        age: document.getElementById('age').value,
+        rating: document.getElementById('rating').value,
+        comments: document.getElementById('comments').value
+  };
+      localStorage.setItem('surveyData', JSON.stringify(surveyData));
+      alert('Survey data saved successfully!');
+    });
+  </script>
+<hr>
+
+<h1>task 5 </h1>
+
+<div class="shopping-page">
+  <div class="shopping-container">
+    <h2> Product List</h2>
+    <input type="text" id="search" class="search-box" placeholder="Search products...">
+
+  <div id="product-list"></div>
+
+  <div class="cart">
+    <h3>Cart</h3>
+    <div id="cart-items"></div>
+    <p><strong>Total: ₹<span id="cart-total">0</span></strong></p>
+    <button  class="clear-btn" onclick="clearCart()">Clear Cart</button>
+  </div>
+</div>
+<script>
+
+  // Sample product data
+const products = [
+  { id: 1, name: "Laptop", price: 50000 },
+  { id: 2, name: "Smartphone", price: 20000 },
+  { id: 3, name: "Headphones", price: 2000 },
+  { id: 4, name: "Keyboard", price: 1500 },
+  { id: 5, name: "Mouse", price: 800 }
+];
+
+// Load cart from LocalStorage or initialize empty
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+// Display products
+function displayProducts(filter = "") {
+  const productList = document.getElementById("product-list");
+  productList.innerHTML = "";
+
+  products
+    .filter(p => p.name.toLowerCase().includes(filter.toLowerCase()))
+    .forEach(p => {
+      const div = document.createElement("div");
+      div.className = "product";
+      div.innerHTML = `
+        <h4>${p.name}</h4>
+        <p>Price: ₹${p.price}</p>
+        <button class="shopping-page .add-btnn" onclick="addToCart(${p.id})">Add to Cart</button>
+      `;
+      productList.appendChild(div);
+    });
+}
+
+// Add product to cart
+function addToCart(id) {
+  const product = products.find(p => p.id === id);
+  cart.push(product);
+  saveCart();
+  displayCart();
+}
+
+// Display cart items
+function displayCart() {
+  const cartItems = document.getElementById("cart-items");
+  cartItems.innerHTML = "";
+
+  cart.forEach((item, index) => {
+    const div = document.createElement("div");
+    div.className = "cart-item";
+    div.innerHTML = `
+      ${item.name} - ₹${item.price}
+      <button  class="shopping-page .delete-btn"
+       onclick="removeFromCart(${index})">Remove</button>
+    `;
+    cartItems.appendChild(div);
+  });
+
+  updateTotal();
+}
+
+// Remove item from cart
+function removeFromCart(index) {
+  cart.splice(index, 1);
+  saveCart();
+  displayCart();
+}
+
+// Update total price
+function updateTotal() {
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  document.getElementById("cart-total").textContent = total;
+}
+
+// Clear cart
+function clearCart() {
+  cart = [];
+  saveCart();
+  displayCart();
+}
+
+// Save cart to LocalStorage
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+// Search functionality
+document.getElementById("search").addEventListener("input", (e) => {
+  displayProducts(e.target.value);
+});
+
+// Initial load
+displayProducts();
+displayCart();
+</script>
+<hr>
+
+<h1>task 6 </h1>
+
+ <div class="container">
+    <h2>💰 Expense Tracker</h2>
+    <input type="text" id="expenseName" placeholder="Expense name ">
+    <input type="number" id="expenseAmount" placeholder="Amount">
+    <button onclick="addExpense()">Add Expense</button>
+    
+    <ul id="expenseList"></ul>
+    <div class="total">Total: ₹<span id="totalAmount">0</span></div>
+  </div>
+
+  <script>
+    // Load saved expenses from LocalStorage
+    let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+    function renderExpenses() {
+      const list = document.getElementById("expenseList");
+      list.innerHTML = "";
+      let total = 0;
+ expenses.forEach((exp, index) => {
+        total += exp.amount;
+        const li = document.createElement("li");
+        li.innerHTML = `${exp.name} - ₹${exp.amount} 
+          <button class="remove-btn" onclick="removeExpense(${index})">X</button>`;
+        list.appendChild(li);
+      });
+
+      document.getElementById("totalAmount").textContent = total;
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+    }
+
+    function addExpense() {
+      const name = document.getElementById("expenseName").value;
+      const amount = parseFloat(document.getElementById("expenseAmount").value);
+
+      if (name && amount > 0) {
+        expenses.push({ name, amount });
+        renderExpenses();
+        document.getElementById("expenseName").value = "";
+        document.getElementById("expenseAmount").value = "";
+      } else {
+        alert("Please enter valid expense details!");
+      }
+    }
+  function removeExpense(index) {
+      expenses.splice(index, 1);
+      renderExpenses();
+    }
+
+    // Initial render
+    renderExpenses();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 10</title>
+    <link rel ="stylesheet" href="day 10.css">
+</head>
+<body>
+    <h1>task 1</h1>
+    
+     <h1>Click Counter App</h1>
+  
+  <!-- 📊 Counter Display -->
+  <div id="counter">0</div>
+  
+  <!-- 🎯 Buttons -->
+  <button id="clickBtn">Click Me</button>
+  <button id="resetBtn">Reset</button>
+
+  <script>
+    // 🌐 JavaScript Logic
+    let count = 0; //(Initial value)
+
+    const counterDisplay = document.getElementById("counter");
+    const clickBtn = document.getElementById("clickBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    // ➕ Increase counter when button clicked
+    clickBtn.addEventListener("click", function() {
+      count++;
+      counterDisplay.textContent = count;
+    });
+    // 🔄 Reset counter when reset button clicked
+    resetBtn.addEventListener("click", function() {
+      count = 0;
+      counterDisplay.textContent = count;
+    });
+    </script>
+<hr>
+
+<h1>task 2</h1>
+ <h1> Image Preview Before Upload</h1>
+  <input type="file" id="fileInput" accept="image/*">
+  <im src="img.jpg" alt="img">
+  <div id="preview"></div>
+
+  <script>
+    const fileInput = document.getElementById("fileInput");
+    const preview = document.getElementById("preview");
+
+    // 🎯 When user selects a file
+    fileInput.addEventListener("change", function() {
+      const file = fileInput.files[0]; // Get first selected file
+      if (file) {
+        const reader = new FileReader();
+   // 📖 Read file as Data URL
+        reader.readAsDataURL(file);
+
+        // ✅ Once loaded, show preview
+        reader.onload = function(e) {
+          preview.innerHTML = `<img src="${e.target.result}" alt="Image Preview">`;
+        };
+      } else {
+        preview.innerHTML = ""; // Clear if no file selected
+      }
+    });
+  </script>
+<hr>
+
+<h1>task 3</h1>
+
+  <h2>Keyboard Shortcut Demo</h2>
+  <p>Try pressing <strong>Ctrl + S</strong> or <strong>Alt + M</strong></p>
+  
+  <div id="message">No shortcut triggered yet</div>
+
+  <script>
+    document.addEventListener("keydown", function(event) {
+      let msg = document.getElementById("message");
+
+      // Ctrl + S
+      if (event.ctrlKey && event.key.toLowerCase() === "s") {
+        event.preventDefault(); // prevent browser's default save
+        msg.textContent = " Save Triggered!";
+      }
+
+      // Alt + M
+      else if (event.altKey && event.key.toLowerCase() === "m") {
+        msg.textContent = " Mail Triggered!";
+      }
+
+      // You can add more shortcuts here
+    });
+  </script>
+<hr>
+
+
+<h1>task 4</h1>
+
+ <div id="quiz-container">
+    <h2 id="question">Question text</h2>
+    <div id="options"></div>
+    <button id="next-btn">Next</button>
+    <div id="score"></div>
+  </div>
+
+  <script>
+    // Quiz Data
+    const quizData = [
+      {
+        question: "Which language runs in a web browser?",
+        options: ["Java", "C", "Python", "JavaScript"],
+        answer: "JavaScript"
+      },
+      {
+        question: "What does CSS stand for?",
+        options: ["Central Style Sheets", "Cascading Style Sheets", "Computer Style System", "Creative Style Syntax"],
+        answer: "Cascading Style Sheets"
+      },
+        {
+            question: "What does HTML stand for?",
+            options: ["Hypertext Markup Language", "Hypertext Markdown Language", "Hyperloop Machine Language", "Helicopters Terminals Motorboats Lamborginis"],
+            answer: "Hypertext Markup Language"
+        }
+    ];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreEl = document.getElementById("score");
+         function loadQuestion() {
+      // Reset
+      optionsEl.innerHTML = "";
+      nextBtn.style.display = "none";
+
+      // Show question
+      const q = quizData[currentQuestion];
+      questionEl.textContent = q.question;
+
+      // Show options
+      q.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.classList.add("option");
+        btn.addEventListener("click", () => checkAnswer(btn, q.answer));
+        optionsEl.appendChild(btn);
+      });
+    }
+ function checkAnswer(selectedBtn, correctAnswer) {
+      const options = document.querySelectorAll(".option");
+      options.forEach(btn => btn.disabled = true); // disable after selection
+
+      if (selectedBtn.textContent === correctAnswer) {
+        selectedBtn.classList.add("correct");
+        score++;
+      } else {
+        selectedBtn.classList.add("wrong");
+        // highlight correct one
+        options.forEach(btn => {
+          if (btn.textContent === correctAnswer) {
+            btn.classList.add("correct");
+          }
+        });
+      }
+      nextBtn.style.display = "block";
+      scoreEl.textContent = `Score: ${score}/${quizData.length}`;
+    }
+
+    nextBtn.addEventListener("click", () => {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        // End of quiz
+        questionEl.textContent = "Quiz Completed!";
+        optionsEl.innerHTML = "";
+        nextBtn.style.display = "none";
+        scoreEl.textContent = `Final Score: ${score}/${quizData.length}`;
+      }
+    });
+
+    // Start quiz
+    loadQuestion();
+  </script>
+<hr>
+
+
+<h1>task 5</h1>
+<div class="drop-area" id="area">
+    <div class="title">Drag the blue box inside the dashed area</div>
+    <div class="draggable" id="box" aria-label="Draggable box" role="button" tabindex="0">Drag</div>
+    <div class="pos" id="pos">x: 20, y: 40</div>
+  </div>
+
+  <script>
+    // EN: Minimal pointer-based drag. Works with mouse + touch + pen.
+    // TA: எளிய pointer-based drag. Mouse + touch + pen எல்லாமே வேலை செய்வது.
+
+    const area = document.getElementById('area');
+    const box = document.getElementById('box');
+    const posEl = document.getElementById('pos');
+
+    // State
+    let isDragging = false;
+    let startX = 0; // pointer start
+    let startY = 0;
+    let boxX = 0;   // box current left
+    let boxY = 0;   // box current top
+
+        // Read initial position from styles
+    boxX = parseInt(getComputedStyle(box).left, 10) || 0;
+    boxY = parseInt(getComputedStyle(box).top, 10) || 0;
+
+    // Utility: clamp value within min/max (keeps box inside area)
+    function clamp(val, min, max) {
+      return Math.max(min, Math.min(val, max));
+    }
+
+    // Update visual position text
+    function updatePosLabel() {
+      posEl.textContent = `x: ${boxX}, y: ${boxY}`;
+    }
+    updatePosLabel();
+
+    // Pointer down: start dragging
+    box.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      box.setPointerCapture(e.pointerId);
+
+      startX = e.clientX;
+      startY = e.clientY;
+      // Remove transitions during drag for smooth movement
+      box.style.transition = 'none';
+    });
+
+    // Pointer move: drag logic with boundary clamp
+    box.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+
+      // Calculate tentative new position
+      let newX = boxX + dx;
+      let newY = boxY + dy;
+
+      // Boundary sizes
+      const areaRect = area.getBoundingClientRect();
+      const boxRect = box.getBoundingClientRect();
+
+      const maxX = areaRect.width - boxRect.width;
+      const maxY = areaRect.height - boxRect.height;
+
+      // Keep inside the area
+      newX = clamp(newX, 0, maxX);
+      newY = clamp(newY, 0, maxY);
+
+ // Apply
+      box.style.left = `${newX}px`;
+      box.style.top = `${newY}px`;
+      posEl.textContent = `x: ${Math.round(newX)}, y: ${Math.round(newY)}`;
+    });
+
+    // Pointer up/cancel: stop dragging and commit new base position
+    function stopDrag(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      box.releasePointerCapture?.(e.pointerId);
+
+      // Commit final position to state
+      boxX = parseInt(box.style.left, 10) || boxX;
+      boxY = parseInt(box.style.top, 10) || boxY;
+
+      // Restore transitions
+      box.style.transition = '';
+      updatePosLabel();
+    }
+    box.addEventListener('pointerup', stopDrag);
+    box.addEventListener('pointercancel', stopDrag);
+
+    // Keyboard accessibility: arrow keys nudge the box
+    box.addEventListener('keydown', (e) => {
+      const step = e.shiftKey ? 10 : 5; // Shift = faster
+      const areaRect = area.getBoundingClientRect();
+      const boxRect = box.getBoundingClientRect();
+      const maxX = areaRect.width - boxRect.width;
+      const maxY = areaRect.height - boxRect.height;
+
+      let changed = false;
+      if (e.key === 'ArrowLeft') { boxX = clamp(boxX - step, 0, maxX); changed = true; }
+      if (e.key === 'ArrowRight') { boxX = clamp(boxX + step, 0, maxX); changed = true; }
+      if (e.key === 'ArrowUp') { boxY = clamp(boxY - step, 0, maxY); changed = true; }
+      if (e.key === 'ArrowDown') { boxY = clamp(boxY + step, 0, maxY); changed = true; }
+
+      if (changed) {
+        box.style.left = `${boxX}px`;
+        box.style.top = `${boxY}px`;
+        updatePosLabel();
+        e.preventDefault();
+      }
+    });
+  </script>
+<hr>
+
+<h1>task 6</h1>
+  <div class="box">
+    <label for="keyInput">Type here (focus and press keys):</label>
+    <input id="keyInput" type="text" placeholder="Start typing..." autofocus aria-describedby="helpText" />
+
+    <p id="helpText" class="muted">
+      Press any key. Special keys (Enter, Shift, Arrow keys, etc.) are logged too.
+    </p>
+
+    <div class="stats">
+      <div class="card">
+        <div>Last key pressed:</div>
+        <div id="lastKey" class="last-key">None</div>
+      </div>
+
+      <div class="card">
+        <div>All keys pressed (latest at bottom):</div>
+        <ul id="keyList"></ul>
+      </div>
+    </div>
+  </div>
+ <script>
+    // Elements
+    const input = document.getElementById('keyInput');
+    const lastKeyEl = document.getElementById('lastKey');
+    const keyListEl = document.getElementById('keyList');
+
+    // Helper: format a key nicely (show key + code + modifiers)
+    function formatKeyEvent(e) {
+      const mods = [];
+      if (e.ctrlKey) mods.push('Ctrl');
+      if (e.shiftKey) mods.push('Shift');
+      if (e.altKey) mods.push('Alt');
+      if (e.metaKey) mods.push('Meta');
+
+      const modText = mods.length ? ` [${mods.join('+')}]` : '';
+      return `${e.key} (code: ${e.code})${modText}`;
+    }
+
+    // Requirement 1: Detect every keypress in the input field
+    input.addEventListener('keydown', (e) => {
+      // Requirement 2: Show the last key pressed dynamically
+      const text = formatKeyEvent(e);
+      lastKeyEl.textContent = text;
+
+      // Requirement 3: Display all pressed keys in a list
+      const li = document.createElement('li');
+      li.textContent = text;
+      keyListEl.appendChild(li);
+    });
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
