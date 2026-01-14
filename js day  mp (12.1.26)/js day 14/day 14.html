@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 14</title>
+      
+    <link rel="stylesheet" href="day 14.css">
+</head>
+<body>
+    <h1>task 1</h1>
+
+ <main class="typing-tester" aria-label="Typing speed tester">
+    <section class="card">
+      <h1>Typing Speed Tester (Fetch API)</h1>
+      <p class="sub">Type the fetched sentence exactly. Timer starts on your first key press. Result shows words per minute.</p>
+
+      <!-- Target sentence -->
+      <div id="target" class="target" aria-live="polite">Loading sentence…</div>
+
+      <!-- Typing input -->
+      <div class="row">
+        <input
+          id="typingInput"
+          class="input"
+          type="text"
+          placeholder="Start typing here…"
+          aria-label="Type the sentence shown above"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button id="resetBtn" class="btn" type="button" aria-label="Reset and fetch new sentence">New sentence</button>
+      </div>
+  <!-- Metrics -->
+      <div class="metrics" role="group" aria-label="Typing metrics">
+        <div class="metric">
+          <div class="label">Time</div>
+          <div id="time" class="value">0.00 s</div>
+        </div>
+        <div class="metric">
+          <div class="label">Words</div>
+          <div id="words" class="value">0</div>
+        </div>
+        <div class="metric">
+          <div class="label">WPM</div>
+          <div id="wpm" class="value">0.0</div>
+        </div>
+      </div>
+  <!-- Status message -->
+      <div id="status" class="status" aria-live="polite"></div>
+
+      <p class="footer">
+        Formula: WPM = words ÷ minutes. Accuracy isn’t measured here—finish only when your text exactly matches the sentence.
+        <br />
+       
+      </p>
+    </section>
+  </main>
+<script>
+
+  const ui = {
+      target: document.getElementById('target'),
+      input: document.getElementById('typingInput'),
+      reset: document.getElementById('resetBtn'),
+      time: document.getElementById('time'),
+      words: document.getElementById('words'),
+      wpm: document.getElementById('wpm'),
+      status: document.getElementById('status'),
+    };
+
+    let sentence = '';
+    let startTime = null;
+    let endTime = null;
+    let timerInterval = null;
+
+ // Offline fallback sentences (if API fails)
+    const fallbackSentences = [
+      'Practice makes progress when you focus on one simple goal.',
+      'Design clean and minimal interfaces for better readability.',
+      'Consistency in small steps builds great habits over time.',
+      'Measure what matters and improve with thoughtful iteration.',
+      'Typing speed improves with calm rhythm and clear attention.'
+    ];
+
+    // Fetch a random sentence using an API (quotable)
+    async function fetchSentence() {
+      // Reset state
+      stopTimer();
+      startTime = null;
+      endTime = null;
+      ui.input.value = '';
+      ui.status.textContent = '';
+      ui.time.textContent = '0.00 s';
+      ui.wpm.textContent = '0.0';
+
+  try {
+        // Simple public endpoint returning a short quote
+        const res = awaitfetch('https://api.quotable.io/random?maxLength=120');
+        const data = await res.json();
+        sentence = (data && data.content) ? data.content : pickFallback();
+      } catch (err) {
+        sentence = pickFallback();
+      }
+
+      ui.target.textContent = sentence;
+      ui.words.textContent = countWords(sentence);
+      ui.input.focus();
+    }
+
+    function pickFallback() {
+      return fallbackSentences[Math.floor(Math.random() * fallbackSentences.length)];
+    }
+
+    function countWords(text) {
+      return text.trim().split(/\s+/).filter(Boolean).length;
+    }
+ function startTimerIfNeeded() {
+      if (startTime !== null) return;
+      startTime = performance.now();
+      // Update elapsed time display every 100ms for responsiveness
+      timerInterval = setInterval(updateElapsed, 100);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    function updateElapsed() {
+      if (startTime === null) return;
+      const now = endTime ?? performance.now();
+      const seconds = (now - startTime) / 1000;
+      ui.time.textContent = seconds.toFixed(2) + ' s';
+    }
+
+ function computeWPM() {
+      if (startTime === null || endTime === null) return 0;
+      const minutes = (endTime - startTime) / 1000 / 60;
+      const words = countWords(sentence);
+      return words / Math.max(minutes, 1e-9);
+    }
+
+    // Input handlers
+    ui.input.addEventListener('keydown', (e) => {
+      // Optional: prevent paste to keep the test fair
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v') {
+        e.preventDefault();
+      }
+    });
+
+    ui.input.addEventListener('input', () => {
+      startTimerIfNeeded();
+
+      // Finish when input matches the sentence exactly
+      if (ui.input.value === sentence) {
+        endTime = performance.now();
+        stopTimer();
+        updateElapsed();
+        const wpm = computeWPM();
+ ui.wpm.textContent = wpm.toFixed(1);
+        ui.status.textContent = 'Completed! 🎯';
+        // Freeze input after completion
+        ui.input.setAttribute('readonly', 'readonly');
+      } else {
+        ui.status.textContent = '';
+        ui.input.removeAttribute('readonly');
+      }
+    });
+
+    ui.reset.addEventListener('click', fetchSentence);
+
+    // Initialize
+    fetchSentence();
+</script>
+
+<hr>
+
+<h1>task 2</h1>
+
+ <h2>Real-Time Air Quality Checker</h2>
+  <p> Select a city:</p>
+
+  <!-- Dropdown for cities -->
+  <select id="citySelect">
+    <option value="Delhi">Delhi</option>
+    <option value="Mumbai">Mumbai</option>
+    <option value="Chennai">Chennai</option>
+    <option value="Kovilpatti">Kovilpatti</option>
+  </select>
+  <button onclick="getAQI()">Check AQI</button>
+
+  <!-- Result display -->
+  <div class="result" id="resultBox"></div>
+
+  <script>
+    async function getAQI() {
+      const city = document.getElementById("citySelect").value;
+      const resultBox = document.getElementById("resultBox");
+
+      // Example API: https://api.waqi.info (requires token)
+      const token = "demo"; // Replace with your own token from waqi.info
+      const url = `https://api.waqi.info/feed/${city}/?token=${token}`;
+
+  try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.status === "ok") {
+          const aqi = data.data.aqi;
+          const pm25 = data.data.iaqi.pm25?.v || "N/A";
+          const pm10 = data.data.iaqi.pm10?.v || "N/A";
+
+          // Health advice based on AQI
+          let advice = "";
+          if (aqi <= 50) advice = "Good 😊 - Safe to go outside.";
+          else if (aqi <= 100) advice = "Moderate 🙂 - Sensitive groups take care.";
+          else if (aqi <= 200) advice = "Unhealthy 😷 - Limit outdoor activity.";
+          else advice = "Hazardous ☠️ - Stay indoors!";
+
+          resultBox.innerHTML = `
+            <h3>${city}</h3>
+            <p><b>AQI:</b> ${aqi}</p>
+            <p><b>PM2.5:</b> ${pm25}</p>
+            <p><b>PM10:</b> ${pm10}</p>
+            <p><b>Advice:</b> ${advice}</p>
+          `;
+        } else {
+          resultBox.innerHTML = "❌ Unable to fetch data.";
+        }
+      } catch (error) {
+       resultBox.innerHTML = "⚠️ Error fetching data.";
+      }
+    }
+  </script>
+<hr>
+
+<h1>task 3</h1>
+
+  <!-- Scoped container to avoid CSS clashes -->
+  <main class="gh-finder">
+    <h1>GitHub User Finder</h1>
+
+    <!-- Input row -->
+    <section class="gh-finder__search">
+      <label for="gh-username">
+        Username
+       
+        <span class="hint">(Enter a GitHub username)</span>
+      </label>
+
+      <div class="gh-finder__controls">
+        <input id="gh-username" type="text" placeholder="e.g., torvalds" />
+        <button id="gh-search" type="button">Search</button>
+      </div>
+
+      <p class="gh-finder__tip">
+        Tip: Try popular accounts like “octocat”, “torvalds”, “gaearon”.
+      </p>
+    </section>
+
+     <!-- Status messages: loading / error -->
+    <section class="gh-finder__status" aria-live="polite">
+      <span id="gh-loading" class="status status--hidden">Loading...</span>
+      <span id="gh-error" class="status status--error status--hidden"></span>
+    </section>
+
+    <!-- Result card -->
+    <section id="gh-result" class="gh-finder__card gh-finder__card--hidden" aria-live="polite">
+      <div class="gh-finder__avatar">
+        <img  src="download.jpg" id="gh-avatar" alt="User avatar" />
+      </div>
+
+      <div class="gh-finder__details">
+        <h2 id="gh-name"></h2>
+        <a id="gh-link" href="#" target="_blank" rel="noopener">View on GitHub</a>
+
+        <p id="gh-bio" class="gh-finder__bio"></p>
+
+        <div class="gh-finder__stats">
+          <div class="stat">
+            <span class="label">Public Repos</span>
+            <span id="gh-repos" class="value">0</span>
+          </div>
+          <div class="stat">
+            
+   <span class="label">Followers</span>
+            <span id="gh-followers" class="value">0</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer note -->
+    <footer class="gh-finder__footer">
+      <small>
+        Note: GitHub API is public; responses may be rate-limited without a token.
+
+      </small>
+    </footer>
+  </main>
+
+<script>
+// Tamil + English annotations for classroom clarity.
+
+// DOM refs
+const input = document.getElementById('gh-username');
+const button = document.getElementById('gh-search');
+const loadingEl = document.getElementById('gh-loading');
+const errorEl = document.getElementById('gh-error');
+const card = document.getElementById('gh-result');
+
+const avatarEl = document.getElementById('gh-avatar');
+const nameEl = document.getElementById('gh-name');
+const linkEl = document.getElementById('gh-link');
+const bioEl = document.getElementById('gh-bio');
+const reposEl = document.getElementById('gh-repos');
+const followersEl = document.getElementById('gh-followers');
+
+// Utility: show/hide status and card
+function setLoading(visible) {
+  loadingEl.classList.toggle('status--hidden', !visible);
+}
+function setError(message) {
+  if (!message) {
+    errorEl.textContent = '';
+    errorEl.classList.add('status--hidden');
+  } else {
+    errorEl.textContent = message;
+    errorEl.classList.remove('status--hidden');
+  }
+}
+function showCard(visible) {
+  card.classList.toggle('gh-finder__card--hidden', !visible);
+}
+
+// Core: Fetch GitHub user
+async function fetchUser(username) {
+  // Guard: empty input
+  if (!username) {
+    setError('Please enter a username.');
+    showCard(false);
+    return;
+  }
+
+  setError('');
+  setLoading(true);
+  showCard(false);
+
+  try {
+    const resp = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}`, {
+      headers: {
+        // Optional: helpful for API routing
+        'Accept': 'application/vnd.github+json'
+      }
+    });
+
+    // Handle known errors
+    if (resp.status === 404) {
+      setLoading(false);
+      setError('User not found. .');
+      return;
+    }
+    if (resp.status === 403) {
+      setLoading(false);
+      setError('Rate limit exceeded. Try later or use a token. / லிமிட் மீறப்பட்டது.');
+      return;
+    }
+    if (!resp.ok) {
+      setLoading(false);
+      setError(`Error: ${resp.status}. Please try again.`);
+      return;
+    }
+
+    const data = await resp.json();
+
+    // Map fields safely
+    const avatar = data.avatar_url || '';
+    const name = data.name || data.login || '(No name)';
+    const profileUrl = data.html_url || '#';
+    const bio = data.bio || 'No bio.';
+    const publicRepos = Number.isFinite(data.public_repos) ? data.public_repos : 0;
+    const followers = Number.isFinite(data.followers) ? data.followers : 0;
+
+    // Render
+    avatarEl.src = avatar;
+    nameEl.textContent = name;
+    linkEl.href = profileUrl;
+    bioEl.textContent = bio;
+    reposEl.textContent = publicRepos;
+    followersEl.textContent = followers;
+
+    setLoading(false);
+    showCard(true);
+  } catch (err) {
+    setLoading(false);
+    setError('Network error. Check your connection.');
+  }
+}
+
+// Events: button click + Enter key
+button.addEventListener('click', () => fetchUser(input.value.trim()));
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') fetchUser(input.value.trim());
+});
+</script>
+
+<hr>
+
+<h1>task 4 </h1>
+<main class="ccv" aria-label="Currency converter">
+    <section class="ccv-card">
+      <header class="ccv-header">
+        <div class="ccv-title">Currency Converter</div>
+        <div class="ccv-status" id="status">Ready</div>
+      </header>
+
+      <div class="ccv-body">
+        <!-- Amount input -->
+        <div>
+          <label class="ccv-label" for="amount">Amount</label>
+          <input class="ccv-input" type="number" id="amount" placeholder="Enter amount (e.g., 100)" inputmode="decimal" min="0" step="any" value="1" />
+        </div>
+
+        <!-- Currency selectors + swap -->
+        <div class="ccv-row">
+          <div>
+            <label class="ccv-label" for="from">From currency</label>
+            <select class="ccv-select" id="from"></select>
+          </div>
+          <div>
+   <label class="ccv-label" for="to">To currency</label>
+            <select class="ccv-select" id="to"></select>
+          </div>
+        </div>
+
+        <div>
+          <button class="ccv-swap" id="swap" aria-label="Swap currencies">
+            <span>Swap</span>
+            <span aria-hidden="true">↔</span>
+          </button>
+        </div>
+
+        <!-- Result display -->
+        <div class="ccv-result" aria-live="polite" aria-atomic="true">
+          <div class="ccv-amount" id="converted">—</div>
+          <div class="ccv-meta" id="meta">Rate: — • Updated: —</div>
+        </div>
+      </div>
+
+      <footer class="ccv-footer">
+        <span>Live rates with caching</span>
+        <span>Frankfurter API</span>
+      </footer>
+    </section>
+  </main>
+ <script>
+    // English + Tamil annotations for classroom clarity.
+    // API: https://api.frankfurter.app/latest?amount=1&from=USD&to=INR
+    // Free, reliable for common currencies.
+
+    const amountEl = document.getElementById('amount');
+    const fromEl = document.getElementById('from');
+    const toEl = document.getElementById('to');
+    const convertedEl = document.getElementById('converted');
+    const metaEl = document.getElementById('meta');
+    const statusEl = document.getElementById('status');
+    const swapBtn = document.getElementById('swap');
+
+    // Scoped state + config
+    const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes cache
+    const DEFAULT_FROM = 'USD';
+    const DEFAULT_TO = 'INR';
+
+    // Common currency list (extend if needed)
+    const CURRENCIES = [
+      'USD','EUR','INR','GBP','JPY','AUD','CAD','CHF','CNY','SGD','AED','SAR','HKD','ZAR','NZD'
+    ];
+ // Populate dropdowns
+    function populateSelects() {
+      const buildOptions = (selected) => CURRENCIES.map(code => {
+        const opt = document.createElement('option');
+        opt.value = code;
+        opt.textContent = code;
+        if (code === selected) opt.selected = true;
+        return opt;
+      });
+
+      fromEl.replaceChildren(...buildOptions(DEFAULT_FROM));
+      toEl.replaceChildren(...buildOptions(DEFAULT_TO));
+    }
+
+    // Cache helper (LocalStorage) — 
+      function setCache(key,value){
+      const payload = { ts: Date.now() };
+      localStorage.setItem( key,JSON.stringify(payload));
+      }
+    
+ function getCache(key) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        const { value, ts } = JSON.parse(raw);
+        if (Date.now() - ts > CACHE_TTL_MS) return null; // expired
+        return value;
+      } catch {
+        return null;
+      }
+    }
+
+    // Build API URL
+    function buildUrl(from, to) {
+      const base = 'https://api.frankfurter.app/latest';
+      const params = new URLSearchParams({ from, to });
+      return `${base}?${params.toString()}`;
+    }
+
+  // Debounce to avoid rapid fetches while typing
+    function debounce(fn, delay = 250) {
+      let t;
+      return (...args) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...args), delay);
+      };
+    }
+
+    // Convert and render
+    async function convertAndRender() {
+      const amount = parseFloat(amountEl.value);
+      const from = fromEl.value;
+      const to = toEl.value;
+
+      
+      if (isNaN(amount) || amount < 0) {
+        convertedEl.textContent = 'Enter a valid amount';
+        metaEl.textContent = '—';
+        return;
+      }
+      if (from === to) {
+        // Same currency — rate = 1
+        const result = amount.toLocaleString(undefined, { maximumFractionDigits: 4 });
+        convertedEl.textContent = `${result} ${to}`;
+        metaEl.textContent = `Rate: 1.0000 • Updated: Now`;
+        statusEl.textContent = 'Ready';
+   return;
+      }
+
+      const cacheKey = `ccv_rate_${from}_${to}`;
+      let rate = getCache(cacheKey);
+      let updatedLabel = 'Cached';
+
+      // Fetch if no cache
+      if (!rate) {
+        try {
+          statusEl.textContent = 'Fetching rate…';
+          const res = await fetch(buildUrl(from, to));
+          if (!res.ok) throw new Error('Rate fetch failed');
+          const data = await res.json();
+          // API returns: { base, date, rates: { TO: number } }
+          rate = data?.rates?.[to];
+          if (!rate) throw new Error('Rate missing');
+          setCache(cacheKey, rate);
+          updatedLabel = `API • ${data.date}`;
+          statusEl.textContent = 'Updated';
+        } catch (err) {
+          // Graceful fallback — 
+          statusEl.textContent = 'Offline or API error';
+          convertedEl.textContent = 'Could not fetch rate';
+          metaEl.textContent = 'Please try again';
+          return;
+        }
+ } else {
+        statusEl.textContent = 'Using cached rate';
+      }
+
+      // Compute
+      const converted = amount * rate;
+      const formatted = converted.toLocaleString(undefined, { maximumFractionDigits: 4 });
+      const rateFmt = rate.toLocaleString(undefined, { maximumFractionDigits: 6 });
+
+      convertedEl.textContent = `${formatted} ${to}`;
+      metaEl.textContent = `Rate: ${rateFmt} • Updated: ${updatedLabel}`;
+    }
+
+    // Event bindings
+    const debouncedConvert = debounce(convertAndRender, 250);
+
+    amountEl.addEventListener('input', debouncedConvert);
+    fromEl.addEventListener('change', convertAndRender);
+    toEl.addEventListener('change', convertAndRender);
+
+    swapBtn.addEventListener('click', () => {
+      const oldFrom = fromEl.value;
+      fromEl.value = toEl.value;
+      toEl.value = oldFrom;
+      convertAndRender();
+    });
+// Init
+    populateSelects();
+    convertAndRender();
+  </script>
+<hr>
+
+<h1>task 5</h1>
+
+ <!-- Container scoped: prevents CSS clashes -->
+  <section class="dict-app" aria-labelledby="app-title">
+    <h1 id="app-title">Dictionary App</h1>
+    <p class="subtitle">Type a word and press Enter.</p>
+
+    <form id="searchForm" class="search" autocomplete="off" aria-label="Dictionary search form">
+      <label for="wordInput" class="sr-only">Word</label>
+      <input
+        id="wordInput"
+        name="word"
+        type="text"
+        placeholder="e.g., serendipity"
+        required
+        aria-required="true"
+      />
+      <button type="submit" aria-label="Search">Search</button>
+    </form>
+
+    <div class="status" role="status" aria-live="polite"></div>
+ <article id="result" class="card" aria-label="Definition result">
+      <!-- Results will be injected here -->
+    </article>
+
+    <footer class="note">
+      <small>
+        Data by <a href="https://dictionaryapi.dev/" target="_blank" rel="noopener noreferrer">Free Dictionary API</a>.
+      
+      </small>
+    </footer>
+  </section>
+
+  <script>
+
+    const form = document.getElementById('searchForm');
+const inputt = document.getElementById('wordInput');
+const statussEl = document.querySelector('.status');
+const resultEl = document.getElementById('result');
+
+// Tamil + English helper messages for teaching
+const messages = {
+  empty: 'Please type a word. ',
+  loading: 'Fetching definition… ',
+  notFound: 'No results found. Try another word.',
+  error: 'Something went wrong. Please try again later. '
+};
+
+// Normalize API response safely
+function normalizeEntry(entry) {
+  const word = entry.word || '';
+  const phonetic = entry.phonetic || (entry.phonetics?.find(p => p.text)?.text) || '';
+  const audio = (entry.phonetics || []).find(p => p.audio)?.audio || '';
+
+  const meanings = (entry.meanings || []).map(m => ({
+    partOfSpeech: m.partOfSpeech || '',
+    definitions: (m.definitions || []).map(d => ({
+      definition: d.definition || '',
+      example: d.example || ''
+    })),
+    synonyms: m.synonyms || []
+  }));
+
+  return { word, phonetic, audio, meanings };
+}
+
+function render(entry) {
+  const { word, phonetic, audio, meanings } = entry;
+
+  resultEl.innerHTML = `
+    <div class="row">
+      <div class="word">${word}</div>
+      ${phonetic ? `<div class="phonetic">/${phonetic}/</div>` : ''}
+      ${audio ? `<button class="audio-btn" data-audio="${audio}">Play</button>` : ''}
+    </div>
+
+    <div class="section-title">Meanings (</div>
+    ${meanings.map(m => `
+      <div class="meaning">
+        <div class="pos">${m.partOfSpeech}</div>
+        ${m.definitions.map(d => `
+          <div class="definition">• ${d.definition}</div>
+          ${d.example ? `<div class="example">Example: ${d.example}</div>` : ''}
+        `).join('')}
+        ${m.synonyms?.length ? `
+          <div class="synonyms">
+            ${m.synonyms.slice(0, 8).map(s => `<span class="chip">${s}</span>`).join('')}
+          </div>` : ''}
+      </div>
+    `).join('')}
+  `;
+
+  const audioBtn = resultEl.querySelector('.audio-btn');
+  if (audioBtn) {
+    audioBtn.addEventListener('click', () => {
+      const src = audioBtn.dataset.audio;
+      const audioEl = new Audio(src);
+      audioEl.play().catch(() => {
+        statusEl.textContent = 'Audio not available. ';
+      });
+    });
+  }
+}
+
+// Fetch word from Free Dictionary API
+async function fetchWord(word) {
+  statusEl.textContent = messages.loading;
+  resultEl.innerHTML = '';
+
+  try {
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+    if (!res.ok) {
+      statusEl.textContent = messages.notFound;
+      return;
+    }
+    const data = await res.json();
+
+    // Choose first entry for simplicity
+    if (!Array.isArray(data) || data.length === 0) {
+      statusEl.textContent = messages.notFound;
+      return;
+    }
+
+    const entry = normalizeEntry(data[0]);
+    render(entry);
+    statusEl.textContent = ''; // clear status
+  } catch (e) {
+    console.error(e);
+    statusEl.textContent = messages.error;
+  }
+}
+
+// Form submit handler
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const word = input.value.trim();
+  if (!word) {
+    statusEl.textContent = messages.empty;
+    return;
+  }
+  fetchWord(word);
+});
+
+// Optional: Enter key UX improvement on input
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+  }
+});
+  </script>
+  <hr>
+
+  <h1>task 6</h1>
+
+ <div class="apod-app" id="apodApp">
+    <div class="card">
+      <div class="header">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="title">NASA Astronomy Picture of the Day</div>
+
+        <div class="controls">
+          <!-- EN: Pick a date (YYYY-MM-DD). TA: தேதியை தேர்வு செய்யவும் (YYYY-MM-DD). -->
+          <input type="date" id="apodDate" />
+          <button id="todayBtn">Today</button>
+          <button id="randomBtn">Random</button>
+        </div>
+      </div>
+
+      <div id="statusBar" class="status">Loading...</div>
+
+      <div class="body">
+        <div class="media-wrap" id="mediaWrap">
+          <!-- Media (image/video) will be placed here -->
+        </div>
+
+        <div class="info">
+          <h2 id="apodTitle">Title</h2>
+          <div class="meta" id="apodMeta">Date • Copyright</div>
+          <p class="explain" id="apodExplain">Explanation</p>
+        </div>
+      </div>
+ <div class="footer">
+        Uses NASA APOD API. For production, replace DEMO_KEY with your own API key from api.nasa.gov.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== APOD Viewer (English  notes) =====
+    // EN: Simple, robust fetcher with image/video handling, date selection, and error display.
+   
+
+    const API_KEY = "DEMO_KEY"; // EN: Replace in production.
+    const API_URL = "https://api.nasa.gov/planetary/apod";
+
+    const el = {
+      date: document.getElementById("apodDate"),
+      todayBtn: document.getElementById("todayBtn"),
+      randomBtn: document.getElementById("randomBtn"),
+      status: document.getElementById("statusBar"),
+      mediaWrap: document.getElementById("mediaWrap"),
+      title: document.getElementById("apodTitle"),
+      meta: document.getElementById("apodMeta"),
+      explain: document.getElementById("apodExplain"),
+    };
+
+ function initDate() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, "0");
+      const dd = String(today.getDate()).padStart(2, "0");
+      const todayStr = `${yyyy}-${mm}-${dd}`;
+
+      el.date.value = todayStr;
+      el.date.max = todayStr;         // APOD doesn’t go beyond today
+      el.date.min = "1995-06-16";     // First APOD date
+    }
+
+    // EN: Show a temporary status or error message
+    // TA: Status/பிழை செய்தியை காட்டு
+    function setStatus(message, type = "info") {
+      el.status.textContent = message;
+      el.status.classList.add("show");
+      el.status.classList.toggle("error", type === "error");
+    }
+    function clearStatus() {
+      el.status.classList.remove("show", "error");
+      el.status.textContent = "";
+    }
+ function renderMedia(data) {
+      el.mediaWrap.innerHTML = "";
+      if (data.media_type === "image") {
+        const img = document.createElement("img");
+        img.className = "media";
+        img.src = data.url;
+        img.alt = data.title || "APOD image";
+        img.loading = "lazy";
+        el.mediaWrap.appendChild(img);
+      } else if (data.media_type === "video") {
+        // Many APOD videos are YouTube embeds
+        const iframe = document.createElement("iframe");
+        iframe.className = "media";
+        iframe.src = data.url;
+        iframe.title = data.title || "APOD video";
+        iframe.frameBorder = "0";
+        iframe.allow =
+          "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+        iframe.allowFullscreen = true;
+        el.mediaWrap.appendChild(iframe);
+      } else {
+        const note = document.createElement("div");
+        note.style.padding = "18px";
+        note.textContent = "Unsupported media type.";
+        el.mediaWrap.appendChild(note);
+
+  }
+    }
+
+    // EN: Populate text fields
+    
+    function renderInfo(data) {
+      el.title.textContent = data.title || "Untitled";
+      const copyright = data.copyright ? ` • © ${data.copyright}` : "";
+      el.meta.textContent = `${data.date}${copyright}`;
+      el.explain.textContent = data.explanation || "No explanation available.";
+    }
+
+    // EN: Fetch APOD for a given date
+  
+    async function fetchApod(dateStr) {
+      setStatus("Loading APOD...");
+      try {
+        const url = new URL(API_URL);
+        url.searchParams.set("api_key", API_KEY);
+        if (dateStr) url.searchParams.set("date", dateStr);
+ const res = await fetch(url.toString(), { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        renderMedia(data);
+        renderInfo(data);
+        clearStatus();
+      } catch (err) {
+        console.error(err);
+        setStatus(
+          "Failed to load APOD. Please try a different date or check your network.",
+          "error"
+        );
+      }
+    }
+ function randomDate(minStr, maxStr) {
+      const min = new Date(minStr).getTime();
+      const max = new Date(maxStr).getTime();
+      const rnd = new Date(min + Math.random() * (max - min));
+      const yyyy = rnd.getFullYear();
+      const mm = String(rnd.getMonth() + 1).padStart(2, "0");
+      const dd = String(rnd.getDate()).padStart(2, "0");
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    // EN: Wire up events
+  
+    function bindEvents() {
+      el.date.addEventListener("change", () => fetchApod(el.date.value));
+      el.todayBtn.addEventListener("click", () => {
+        initDate();
+        fetchApod(el.date.value);
+      });
+      el.randomBtn.addEventListener("click", () => {
+        const r = randomDate(el.date.min, el.date.max);
+        el.date.value = r;
+        fetchApod(r);
+      });
+    }
+(function start() {
+      initDate();
+      bindEvents();
+      fetchApod(el.date.value);
+    })();
+  </script>
+<hr>
+
+
+
+
+
+
+
+
+
+</body>
+</html>

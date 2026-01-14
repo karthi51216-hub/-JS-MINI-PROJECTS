@@ -1,0 +1,730 @@
+/*task 1*/
+ /* Scoped styles: container class prevents conflicts in multi-task pages */
+    .typing-tester {
+      --bg: #0f172a;
+      --card: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #22c55e;
+
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(180deg, #0b1020, var(--bg));
+      color: var(--text);
+      width: 90%;
+      min-height: 700px;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+.typing-tester .card {
+      width: min(820px,);
+      background: var(--card);
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      padding: 20px;
+    }
+
+    .typing-tester h1 {
+      font-size: 1.25rem;
+      margin: 0 0 8px;
+      letter-spacing: 0.2px;
+    }
+
+    .typing-tester .sub {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 18px;
+    }
+ .typing-tester .target {
+      background: #0b1220;
+      border: 1px dashed #334155;
+      border-radius: 12px;
+      padding: 16px;
+      line-height: 1.7;
+      margin-bottom: 14px;
+      user-select: none;
+    }
+
+    .typing-tester .input {
+      width: 100%;
+      font-size: 1rem;
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      background: #0b1220;
+      color: var(--text);
+      outline: none;
+    }
+    .typing-tester .input:focus {
+      border-color: #475569;
+      box-shadow: 0 0 0 3px rgba(71,85,105,.35);
+    }
+
+ .typing-tester .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .typing-tester .btn {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      background: #0b1220;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .typing-tester .btn:hover {
+      border-color: #64748b;
+    }
+
+    .typing-tester .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+      
+    }
+ .typing-tester .metric {
+      background: #0b1220;
+      border: 1px solid #1f2937;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+    }
+    .typing-tester .metric .label {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .typing-tester .metric .value {
+      font-size: 1.25rem;
+      margin-top: 6px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .typing-tester .status {
+      margin-top: 12px;
+      color: var(--accent);
+      min-height: 24px;
+    }
+   .typing-tester .footer {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 560px) {
+      .typing-tester .metrics {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+/*task 2*/
+
+ body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f0f8ff;
+      padding: 20px;
+    }
+    select, button {
+      padding: 8px;
+      margin: 10px;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+
+    /*task 3 */
+
+    /* Scoped styles to .gh-finder to avoid clashes */
+.gh-finder {
+  --bg: #0f172a;
+  --card: #111827;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --accent: #60a5fa;
+  --error: #ef4444;
+  --ok: #10b981;
+
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(120deg, #0f172a, #111827 60%);
+  color: var(--text);
+  display: grid;
+  place-items: start center;
+  padding: 2rem 1rem;
+}
+
+.gh-finder h1 {
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+  letter-spacing: 0.5px;
+}
+
+.gh-finder__search {
+  width: 100%;
+  max-width: 640px;
+  margin-bottom: 1rem;
+}
+
+.gh-finder__search label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.gh-finder .hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+}
+
+.gh-finder__controls {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+}
+
+#gh-username {
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #0b1220;
+  color: var(--text);
+  outline: none;
+}
+#gh-username::placeholder { color: #64748b; }
+
+#gh-search {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #0b1220;
+  font-weight: 600;
+  cursor: pointer;
+}
+#gh-search:hover { filter: brightness(1.1); }
+
+.gh-finder__tip {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Status */
+.status {
+  display: inline-block;
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  background: #0b1220;
+}
+.status--error { color: #fff; background: #1f2937; border-left: 4px solid var(--error); }
+.status--hidden { display: none; }
+
+/* Card */
+.gh-finder__card {
+  width: 100%;
+  max-width: 640px;
+  background: var(--card);
+  border: 1px solid #1f2937;
+  border-radius: 14px;
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 1rem;
+  padding: 1rem;
+}
+.gh-finder__card--hidden { display: none; }
+
+.gh-finder__avatar img {
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid #334155;
+}
+
+.gh-finder__details h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+#gh-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+#gh-link:hover { text-decoration: underline; }
+
+.gh-finder__bio {
+  margin: 0.5rem 0 0.75rem;
+  color: var(--muted);
+}
+
+.gh-finder__stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.stat {
+  background: #0b1220;
+  border: 1px solid #1f2937;
+  border-radius: 10px;
+  padding: 0.75rem;
+}
+.stat .label { color: var(--muted); font-size: 0.9rem; }
+.stat .value { display: block; margin-top: 0.25rem; font-size: 1.25rem; font-weight: 700; color: var(--ok); }
+
+.gh-finder__footer {
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  max-width: 640px;
+}
+
+/*task 4 */
+
+ /* Scoped container to avoid CSS clashes — class: .ccv */
+    :root {
+      --ccv-bg: #0f172a;       /* slate-900 */
+      --ccv-card: #354f87;     /* gray-900 */
+      --ccv-text: #e5e7eb;     /* gray-200 */
+      --ccv-accent: #22c55e;   /* green-500 */
+      --ccv-muted: #9ca3af;    /* gray-400 */
+      --ccv-border: #1f2937;   /* gray-800 */
+      --ccv-focus: #60a5fa;    /* blue-400 */
+    }
+
+    .ccv {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: var(--ccv-text);
+      background: linear-gradient(135deg, #0b1220, #0f172a);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+   .ccv-card {
+      width: 90%;
+      max-width: 560px;
+      background: var(--ccv-card);
+      border: 1px solid var(--ccv-border);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+      overflow: hidden;
+    }
+
+    .ccv-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--ccv-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .ccv-title { font-weight: 700; letter-spacing: 0.3px; }
+    .ccv-status { font-size: 12px; color: var(--ccv-muted); }
+
+    .ccv-body {
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+.ccv-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .ccv-label {
+      font-size: 12px;
+      color: var(--ccv-muted);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .ccv-input,
+    .ccv-select {
+      width: 100%;
+      padding: 12px 14px;
+      background: #0b1323;
+      color: var(--ccv-text);
+      border: 1px solid var(--ccv-border);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+.ccv-input:focus,
+    .ccv-select:focus {
+      border-color: var(--ccv-focus);
+      box-shadow: 0 0 0 3px rgba(96,165,250,0.25);
+    }
+
+    .ccv-swap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--ccv-border);
+      border-radius: 10px;
+      background: #0b1323;
+      color: var(--ccv-text);
+      cursor: pointer;
+      transition: transform 140ms ease, border-color 160ms ease;
+      user-select: none;
+    }
+    .ccv-swap:hover { transform: translateY(-1px); border-color: var(--ccv-focus); }
+
+    .ccv-result {
+      background: #0b1323;
+      border: 1px solid var(--ccv-border);
+      border-radius: 12px;
+      padding: 16px;
+      display: grid;
+   gap: 6px;
+    }
+    .ccv-amount {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ccv-accent);
+    }
+    .ccv-meta { font-size: 12px; color: var(--ccv-muted); }
+
+    .ccv-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--ccv-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--ccv-muted);
+    }
+
+    /* Responsive */
+    @media (max-width: 560px) {
+      .ccv-row { grid-template-columns: 1fr; }
+    }
+
+
+/*task 5 */
+
+/* Scoped to .dict-app to avoid style clashes elsewhere */
+.dict-app {
+  --bg: #0f172a;
+  --card: #111827;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --accent: #38bdf8;
+
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: linear-gradient(180deg, #0b1220, var(--bg));
+  color: var(--text);
+  min-height: 100vh;
+  padding: 32px 16px;
+  display: grid;
+  place-items: start center;
+}
+
+.dict-app h1 {
+  margin: 0 0 8px;
+  font-size: 1.8rem;
+  letter-spacing: 0.5px;
+}
+
+.dict-app .subtitle {
+  margin: 0 0 16px;
+  color: var(--muted);
+}
+
+.dict-app .search {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  width: min(720px, 100%);
+  margin: 12px 0 16px;
+}
+
+.dict-app .search input {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #1f2937;
+  background: #0b1220;
+  color: var(--text);
+  outline: none;
+}
+
+.dict-app .search input::placeholder {
+  color: #6b7280;
+}
+
+.dict-app .search button {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: none;
+  background: var(--accent);
+  color: #06283d;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dict-app .search button:hover {
+  filter: brightness(1.05);
+}
+
+.dict-app .status {
+  width: min(720px, 100%);
+  margin: 6px 0 12px;
+  color: var(--muted);
+  min-height: 22px;
+}
+
+.dict-app .card {
+  width: min(720px, 100%);
+  background: var(--card);
+  border: 1px solid #1f2937;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+
+.dict-app .row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.dict-app .word {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.dict-app .phonetic {
+  color: var(--muted);
+}
+
+.dict-app .audio-btn {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #1f2937;
+  background: #0b1220;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.dict-app .section-title {
+  margin: 18px 0 6px;
+  font-weight: 700;
+}
+
+.dict-app .meaning {
+  border-left: 3px solid #374151;
+  padding-left: 12px;
+  margin: 8px 0;
+}
+
+.dict-app .pos {
+  color: #93c5fd;
+  font-weight: 600;
+}
+
+.dict-app .definition {
+  margin: 4px 0;
+}
+
+.dict-app .example {
+  color: #a7f3d0;
+}
+
+.dict-app .synonyms {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.dict-app .chip {
+  border: 1px dashed #334155;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
+.dict-app .note {
+  width: min(720px, 100%);
+  margin-top: 14px;
+  color: var(--muted);
+  text-align: right;
+}
+
+.dict-app .sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0);
+  border: 0;
+}
+
+/*task 6 */
+
+ /* ===== Scoped container to avoid style conflicts ===== */
+    .apod-app {
+      --bg: #0b132b;
+      --panel: #1c2541;
+      --accent: #3a506b;
+      --text: #eaeaea;
+      --muted: #b8c1d1;
+
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      place-items: start center;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+
+ .apod-app .card {
+      width: min(920px, 100%);
+      background: var(--panel);
+      border-radius: 14px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+      overflow: hidden;
+      border: 1px solid #26314f;
+    }
+
+    .apod-app .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+      border-bottom: 1px solid #2a3554;
+      background: linear-gradient(180deg, var(--accent), transparent);
+    }
+
+    .apod-app .logo {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff 0%, #d9e7ff 15%, #3a506b 60%, #0b132b 100%);
+      box-shadow: 0 0 12px rgba(255,255,255,0.25);
+    }
+ .apod-app .title {
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .apod-app .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-left: auto;
+      align-items: center;
+    }
+
+    .apod-app .controls input[type="date"],
+    .apod-app .controls button {
+      background: #223052;
+      color: var(--text);
+      border: 1px solid #2f3e63;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 14px;
+      outline: none;
+    }
+.apod-app .controls input[type="date"]:focus,
+    .apod-app .controls button:hover {
+      border-color: #4b6fae;
+    }
+
+    .apod-app .body {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .apod-app .media-wrap {
+      background: #0e162d;
+      display: grid;
+      place-items: center;
+      aspect-ratio: 16/9;
+      border-bottom: 1px solid #243154;
+    }
+
+    .apod-app .media {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #0b132b;
+    }
+
+ .apod-app .info {
+      padding: 18px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .apod-app .info h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .apod-app .meta {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .apod-app .explain {
+      line-height: 1.6;
+      font-size: 15px;
+      color: #e7edf6;
+    }
+ .apod-app .footer {
+      padding: 12px 18px 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .apod-app .status {
+      display: none;
+      padding: 12px 16px;
+      background: #182341;
+      border-top: 1px solid #243154;
+      color: #dfe7ff;
+      font-size: 14px;
+    }
+
+    .apod-app .status.show {
+      display: block;
+    }
+  .apod-app .error {
+      background: #3b1f26;
+      border-top: 1px solid #5b2b36;
+      color: #ffd6de;
+    }
+
+    /* Responsive adjustments */
+    @media (min-width: 720px) {
+      .apod-app .body {
+        grid-template-columns: 58% 42%;
+      }
+      .apod-app .media-wrap {
+        aspect-ratio: auto;
+        min-height: 360px;
+        height: 100%;
+      }
+      .apod-app .info {
+        padding: 22px;
+      }
+    }
+
+

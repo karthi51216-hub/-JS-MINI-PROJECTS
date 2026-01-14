@@ -1,0 +1,458 @@
+/*task 1 */
+body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .form-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+         margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .error {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  button:hover {
+      background: #0056b3;
+    }
+
+
+
+    /*task 2*/
+
+
+
+/* Wrapper container — எல்லா ஸ்டைல்களும் இங்கே scope ஆகும் */
+.api-logger {
+  box-sizing: border-box;
+  max-width: 720px;
+  margin: 32px auto;
+  padding: 24px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+}
+
+/* Page background (optional) — முழு பக்கத்திற்கு பின்னணி வண்ணம் */
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Heading —  */
+.api-logger h2 {
+  margin: 0 0 16px;
+  font-size: 1.25rem;
+  letter-spacing: 0.2px;
+}
+
+/* Button —  */
+.api-logger button {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, #0b1324, #0a1222);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+.api-logger button:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 18px rgba(56, 189, 248, 0.18);
+  transform: translateY(-1px);
+}
+
+.api-logger button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.api-logger button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Output code block — API  */
+.api-logger #output {
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: #0b1222;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  white-space: pre-wrap;     /* நீளமான வரிகள் முறிவு */
+  word-wrap: break-word;     /* பெரிய JSON கீ/வில்யூவுகள் முறிவு */
+  max-height: 380px;         /* அதிகமான லாக் இருக்கும் போது scroll */
+  overflow: auto;
+}
+
+/* Subtle left accent bar — status-ready (optional classes below) */
+.api-logger #output {
+  position: relative;
+}
+
+.api-logger #output::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 12px 0 0 12px;
+  background: var(--muted); /* default muted */
+}
+
+/* Optional status classes — JS மூலம் class சேர்த்தால் நிறம் மாறும்
+   .is-success -> பச்சை, .is-error -> */
+.api-logger #output.is-success::before {
+  background: var(--success);
+}
+.api-logger #output.is-error::before {
+  background: var(--error);
+}
+
+/* Helper: small muted text (if needed) */
+.api-logger .muted {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* Responsive —  spacing & font  */
+@media (max-width: 480px) {
+  .api-logger {
+    margin: 16px;
+    padding: 18px;
+    border-radius: 12px;
+  }
+  .api-logger #output {
+    font-size: 0.9rem;
+    max-height: 300px;
+  }
+}
+
+    /*task  3*/
+ /* ===== Scoped container to avoid style clashes ===== */
+  
+
+    .calc {
+      width: 320px;
+      background: var(--panel);
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+      overflow: hidden;
+    }
+  .bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-bottom: 1px solid #1f2937;
+      background: #0b1020;
+    }
+   .dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .dot.red { background: #ef4444; }
+     .dot.yellow { background: #f59e0b; }
+     .dot.green { background: #22c55e; }
+     .title {
+      font-size: 14px;
+      color: #9ca3af;
+      margin-left: auto;
+    }
+     .screen {
+      padding: 16px;
+      min-height: 76px;
+      display: grid;
+      gap: 6px;
+      background: #0d1326;
+    }
+    .expr {
+      font-size: 14px;
+      color: #9ca3af;
+      word-break: break-all;
+    }
+     .result {
+      font-size: 28px;
+      font-weight: 600;
+      text-align: right;
+      word-break: break-all;
+    }
+    .error {
+      font-size: 12px;
+      color: var(--danger);
+      min-height: 16px;
+    }
+ .keys {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      padding: 12px;
+      background: #0b1020;
+      border-top: 1px solid #1f2937;
+    }
+
+    .calc-box button {
+      background: var(--btn);
+      color: var(--text);
+      border: 0;
+      border-radius: 12px;
+      height: 48px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+     button:hover { background: var(--btn-hover); }
+  .op { color: #93c5fd; }         /* blue ops */
+  .do { background: #14532d; }    /* equals */
+    .do:hover { background: #166534; }
+     .clr { background: #7f1d1d; }   /* clear */
+     .clr:hover { background: #991b1b; }
+    .del { background: #3f1d1d; }   /* delete */
+   .del:hover { background: #4a1d1d; }
+
+    /* Accessibility focus */
+    button:focus-visible {
+      outline: 2px solid #22c55e;
+      outline-offset: 2px;
+    }
+
+    /* Small screens */
+    @media (max-width: 360px) {
+     .calc { width: 100%; }
+    }
+
+    /*task 4*/
+
+     /* ===== Scoped styles: clashes avoided with .dbg-container ===== */
+    
+    .dbg-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 16px;
+    }
+ .dbg-title {
+      font-weight: 700; font-size: 18px;
+    }
+    .dbg-controls {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .dbg-controls input, .dbg-controls select, .dbg-controls button {
+      background: var(--card); color: var(--text);
+      border: 1px solid #374151; border-radius: 6px;
+      padding: 8px 10px; font-size: 13px;
+    }
+    .dbg-controls button {
+      cursor: pointer;
+    }
+    .dbg-controls button.clear { border-color: var(--danger); color: #fecaca; }
+    .dbg-controls button.sim { border-color: var(--warning); color: #fde68a; }
+    .dbg-panel {
+      background: var(--panel);
+      border: 1px solid #1f2937;
+      border-radius: 10px; padding: 12px;
+    }
+    .dbg-count {
+      font-size: 12px; color: var(--muted); margin-bottom: 8px;
+    }
+
+ .dbg-list {
+      display: grid; grid-template-columns: 1fr; gap: 10px;
+    }
+    @media (min-width: 800px) {
+      .dbg-list { grid-template-columns: 1fr 1fr; }
+    }
+    .dbg-card {
+      background: var(--card); border: 1px solid #374151; border-radius: 8px;
+      padding: 10px; display: grid; gap: 6px;
+    }
+    .dbg-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+    .dbg-badge {
+      padding: 2px 6px; border-radius: 999px; font-weight: 600; font-size: 11px;
+      border: 1px solid #374151;
+    }
+    .dbg-badge.error { color: #fecaca; border-color: var(--danger); }
+    .dbg-badge.warn { color: #fde68a; border-color: var(--warning); }
+    .dbg-badge.info { color: #a7f3d0; border-color: var(--accent); }
+    .dbg-msg { font-size: 13px; }
+    .dbg-stack { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: #cbd5e1; white-space: pre-wrap; }
+    .dbg-empty { color: var(--muted); font-size: 13px; text-align: center; padding: 20px 10px; }
+ 
+
+    /*task 5 */
+
+    /* 🎨 General Page Styling */
+
+
+/* 🎨 Form Container */
+form {
+  background: #ffffff;
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 320px;
+}
+
+/* 🎨 Labels and Inputs */
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+input {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0,123,255,0.3);
+}
+
+/* 🎨 Submit Button */
+button {
+  width: 100%;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+/* 🎨 Result Message */
+#result {
+  margin-top: 15px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/*task 6 */
+
+  body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .logger-form {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input, select, button {
+      padding: 8px;
+      font-size: 14px;
+    }
+
+ button {
+      background: #0078d7;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #005a9e;
+    }
+
+    .log-container {
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      max-width: 800px;
+      margin: auto;
+    }
+.log-entry {
+      padding: 6px;
+      margin: 4px 0;
+      border-left: 5px solid transparent;
+    }
+
+    .info {
+      border-color: #0078d7;
+      color: #0078d7;
+    }
+
+    .warn {
+      border-color: #f1c40f;
+      color: #b7950b;
+    }
+
+    .error {
+      border-color: #e74c3c;
+      color: #c0392b;
+    }
+
+    .timestamp {
+      font-size: 12px;
+      color: #555;
+      margin-left: 10px;
+    }
+
+
+

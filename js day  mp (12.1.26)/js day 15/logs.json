@@ -1,0 +1,12 @@
+[
+  {
+    "type": "success",
+    "data": { "userId": 1, "id": 1, "title": "...", "body": "..." },
+    "time": "13/01/2026, 7:05:00 PM"
+  },
+  {
+    "type": "error",
+    "data": "HTTP Error: 404",
+    "time": "13/01/2026, 7:06:00 PM"
+  }
+]
